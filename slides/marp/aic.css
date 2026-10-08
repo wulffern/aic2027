@@ -4,29 +4,38 @@
  * The Marp theme for the course decks. One idea: the slide is a column,
  * the title on top, and whatever is left over goes to the figure.
  *
- * Colours follow tikz/STYLE.md: black for text, one blue for structure,
- * red only for what the slide is about.
+ * Calm and quiet: white content slides, a warm paper tint for title and
+ * section slides, slate text, and one muted teal for structure. Red
+ * stays reserved for what the slide is about, as in tikz/STYLE.md.
+ * Inter when the network is there, the system sans when it is not.
  */
 
 @import 'default';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --ink: #1a1a1a;
-  --muted: #8a8a8a;
-  --rule: #e2e2e2;
-  --accent: #1f5fbf;
+  --ink: #1f2933;
+  --soft-ink: #3e4c59;
+  --muted: #8a94a0;
+  --rule: #e6e9ed;
+  --paper: #f6f4ef;
+  --accent: #2c6e8f;
+  --accent-soft: #e4eef3;
   --red: #b3261e;
+  --code: #f4f6f8;
 }
 
 section {
   width: 1280px;
   height: 720px;
-  padding: 56px 72px 64px 72px;
+  padding: 56px 76px 60px 76px;
   background: #ffffff;
   color: var(--ink);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 28px;
-  line-height: 1.4;
+  font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 27px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.003em;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -35,25 +44,53 @@ section {
 h1, h2, h3 {
   color: inherit;
   font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: 0 0 0.6em 0;
-  line-height: 1.15;
+  letter-spacing: -0.022em;
+  margin: 0 0 0.55em 0;
+  line-height: 1.12;
 }
-h1 { font-size: 52px; }
-h2 { font-size: 44px; }
-h3 { font-size: 34px; }
+h1 { font-size: 50px; }
+h2 { font-size: 42px; }
+h3 { font-size: 32px; font-weight: 500; color: var(--soft-ink); }
 
-/* the title of an ordinary slide gets a thin rule under it */
-h1:first-child, h2:first-child {
-  padding-bottom: 0.25em;
-  border-bottom: 2px solid var(--rule);
+/* the title of an ordinary slide: a short teal dash above it */
+h1:first-child::before, h2:first-child::before {
+  content: "";
+  display: block;
+  width: 44px;
+  height: 4px;
+  border-radius: 2px;
+  margin-bottom: 18px;
+  background: var(--accent);
 }
 
 p, ul, ol { margin: 0.35em 0; }
-li { margin: 0.2em 0; }
-li::marker { color: var(--accent); }
-strong { font-weight: 600; }
-a { color: var(--accent); text-decoration: none; }
+p, li { color: var(--soft-ink); }
+li { margin: 0.25em 0; }
+ul { padding-left: 1.1em; }
+ul > li { list-style: none; position: relative; }
+ul > li::before {
+  content: "";
+  position: absolute;
+  left: -0.95em;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+ol > li::marker { color: var(--accent); font-weight: 600; }
+strong { font-weight: 600; color: var(--ink); }
+em { color: var(--ink); }
+a { color: var(--accent); text-decoration: none;
+    border-bottom: 1px solid var(--accent-soft); }
+
+blockquote {
+  margin: 0.5em 0;
+  padding: 0.2em 0 0.2em 1em;
+  border-left: 4px solid var(--accent);
+  color: var(--soft-ink);
+  background: none;
+}
 
 /* ---- figures: take the space that is left ---- */
 
@@ -75,31 +112,57 @@ p > img:only-child {
 
 /* ---- maths ---- */
 
-mjx-container { font-size: 112%; }
+mjx-container { font-size: 110%; color: var(--ink); }
 mjx-container[display="true"] {
-  margin: 0.45em 0 !important;
+  margin: 0.5em 0 !important;
 }
+
+/* ---- code ---- */
+
+pre {
+  background: var(--code);
+  border: none;
+  border-radius: 12px;
+  padding: 0.9em 1.1em;
+  font-size: 19px;
+  line-height: 1.5;
+}
+code {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  background: var(--code);
+  border-radius: 6px;
+  padding: 0.05em 0.3em;
+  color: var(--ink);
+}
+pre code { background: none; padding: 0; }
 
 /* ---- tables ---- */
 
 table {
   border-collapse: collapse;
   font-size: 26px;
-  margin: 0.4em auto;
+  margin: 0.5em auto;
+  font-variant-numeric: tabular-nums;
 }
 th, td {
   border: none;
   border-bottom: 1px solid var(--rule);
-  padding: 0.3em 0.8em;
+  padding: 0.42em 1em;
   background: transparent !important;
+  color: var(--soft-ink);
 }
 th {
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 2px solid var(--accent);
   font-weight: 600;
+  font-size: 0.72em;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink);
 }
+tr:last-child td { border-bottom: none; }
 table tr:nth-child(2n) { background: transparent; }
 
-sub { font-size: 18px; color: var(--muted); vertical-align: baseline; }
+sub { font-size: 17px; color: var(--muted); vertical-align: baseline; }
 
 /* ---- columns: [.column] ---- */
 
@@ -107,7 +170,7 @@ sub { font-size: 18px; color: var(--muted); vertical-align: baseline; }
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
-  gap: 48px;
+  gap: 56px;
   flex: 1 1 auto;
   min-height: 0;
 }
@@ -116,46 +179,91 @@ sub { font-size: 18px; color: var(--muted); vertical-align: baseline; }
 
 section.section {
   justify-content: center;
+  background:
+    radial-gradient(circle at 92% 108%, var(--accent-soft) 0 300px, transparent 301px),
+    var(--paper);
 }
 section.section h1, section.section h2 {
-  font-size: 88px;
-  border: none;
-  padding: 0;
+  font-size: 84px;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  max-width: 980px;
+  margin: 0;
   color: inherit;
 }
-section.section h1::after, section.section h2::after {
-  content: "";
-  display: block;
-  width: 120px;
+section.section h1::before, section.section h2::before {
+  width: 64px;
   height: 6px;
-  margin-top: 0.35em;
-  background: var(--accent);
+  border-radius: 3px;
+  margin-bottom: 28px;
 }
 
 /* ---- the footer and page number ---- */
 
 footer, section::after {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--muted);
+  letter-spacing: 0.02em;
 }
-footer { left: 72px; bottom: 24px; }
-section::after { right: 72px; bottom: 24px; }
+footer { left: 76px; bottom: 22px; }
+section::after { right: 76px; bottom: 22px; font-variant-numeric: tabular-nums; }
 
 /* ---- a slide with a lot on it: one step smaller ---- */
 
-section.dense { font-size: 23px; }
-section.dense li { margin: 0.1em 0; }
+section.dense { font-size: 22px; }
+section.dense li { margin: 0.12em 0; }
+section.dense h1, section.dense h2 { font-size: 36px; }
 
 /* ---- the title slide ---- */
 
 section.title {
   justify-content: center;
-  background: linear-gradient(90deg, var(--accent) 0 14px, #ffffff 14px);
+  background:
+    radial-gradient(circle at 100% 0%, var(--accent-soft) 0 380px, transparent 381px),
+    radial-gradient(circle at 84% 100%, #ece7dc 0 160px, transparent 161px),
+    var(--paper);
 }
 section.title h1 {
-  font-size: 72px;
-  border: none;
-  padding: 0;
-  max-width: 900px;
+  font-size: 76px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  max-width: 880px;
+  margin-bottom: 0.4em;
 }
-section.title p { color: var(--muted); font-size: 26px; }
+section.title h1::before {
+  width: 72px;
+  height: 6px;
+  border-radius: 3px;
+  margin-bottom: 36px;
+}
+section.title p {
+  color: var(--muted);
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ---- a long derivation: smaller maths, so it fits ---- */
+
+section.mathdense mjx-container { font-size: 88%; }
+section.mathdense mjx-container[display="true"] { margin: 0.3em 0 !important; }
+
+/* ---- a slide that sets its own text colour, [.text: c] ---- */
+
+section.inverted {
+  --ink: #ffffff;
+  --soft-ink: #e6e9ed;
+  --muted: #9aa5b1;
+  --rule: #3e4c59;
+  --code: #1f2933;
+  --accent: #7fb3cc;
+  --accent-soft: #2c4a5a;
+}
+
+/* ---- a slide without a title: a result on its own, centred ---- */
+
+section:not(.title):not(.section):not(:has(> h1, > h2, > h3, > .columns)) {
+  justify-content: center;
+  text-align: center;
+}

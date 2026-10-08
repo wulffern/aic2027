@@ -185,7 +185,7 @@ def convert_slide(lines, src_dir, first=False, meta={}):
     notes = in_note(lines)
     visible = [l for l, n in zip(lines, notes) if not n]
     has_text = any(is_content(l) for l in visible)
-    head, body, cols = [], [], []
+    head, body, cols, classes = [], [], [], []
     section = False
 
     def image(m):
@@ -218,6 +218,9 @@ def convert_slide(lines, src_dir, first=False, meta={}):
         m = TEXT_RE.match(s)
         if m:
             head.append(f"<!-- _color: {m.group(1)} -->")
+            # the theme colours text through variables; this class
+            # switches them, or the slide's own colour never shows
+            classes.append("inverted")
             continue
         if s == "[.column]":
             cols.append(len(body))
@@ -228,15 +231,30 @@ def convert_slide(lines, src_dir, first=False, meta={}):
 
     words = sum(len(l.split()) for l in body
                 if l.strip() and not l.strip().startswith(("<", "!", "|", "$$")))
+    # lines of display maths: a long derivation needs smaller type
+    maths, blocks, inside = 0, 0, False
+    for l in body:
+        n = l.count("$$")
+        if inside or n:
+            maths += 1
+        if n and not inside:
+            blocks += 1
+        if n % 2:
+            inside = not inside
     if section:
-        head.append("<!-- _class: section -->")
+        classes.append("section")
     elif first:
-        head.append("<!-- _class: title -->")
+        classes.append("title")
         body.append("")
         body.append(" · ".join(x for x in (meta.get("footer"), meta.get("date"))
                                 if x))
     elif words > 110:
-        head.append("<!-- _class: dense -->")
+        classes.append("dense")
+    if (maths > 10 or blocks >= 6) and not section:
+        classes.append("mathdense")
+    if classes:
+        # Marp keeps only the last _class, so give it all of them at once
+        head.append(f"<!-- _class: {' '.join(classes)} -->")
     if cols:
         # everything from the first [.column] on is laid out side by side
         pre = body[:cols[0]]

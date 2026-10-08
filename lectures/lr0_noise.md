@@ -352,9 +352,12 @@ White: the same power density at every frequency
 <!--pan_doc:
 Summing noise sources is usually trivial, but we need to know why and
 when it is not. If we write the time dependant noise signals as
+-->
 
 $$v_{tot}^2(t) = (v_1(t) + v_2(t))^2 = v_1^2(t) + 2v_1(t)v_2(t) + v_2^2(t)$$
+<!--pan_doc:
 The average power is defined as
+-->
 
 $$\begin{aligned}
   \overline{e_{tot}^2} &= \lim_{T\to\infty} \frac{1}{T}\int^{+T/2}_{-T/2}{ v_{tot}^2(t) dt} \\
@@ -365,6 +368,9 @@ $$\begin{aligned}
 + \lim_{T\to\infty} \frac{1}{T}\int^{+T/2}_{-T/2}{ 2v_1(t)v_2(t) dt}
 \end{aligned}$$
 
+---
+
+<!--pan_doc:
 If $\overline{e_{1}^2}$ and $\overline{e_{2}^2}$ are uncorrelated noise
 sources we can skip the last term in
 the sum above and just write
@@ -375,6 +381,10 @@ $$\overline{e_{tot}^2} = \overline{e_{1}^2} + \overline{e_{2}^2}$$
 Most
 natural noise sources are uncorrelated.
 -->
+
+<!--pan_skip: -->
+
+Uncorrelated sources: the cross term averages to zero, and the powers add
 
 ---
 
