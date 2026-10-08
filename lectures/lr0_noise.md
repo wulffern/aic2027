@@ -52,7 +52,7 @@ hard. We will follow the chain, and put a number on each link.
 <!--pan_doc:
 Noise is a phenomenon that occurs in all electronic circuits. It places a
 lower limit on the smallest signal we can use. Many now have super audio
-compact disc (SACD) players with 24bit converters, 24 bits is around
+compact disc (SACD)[^sacd] players with 24bit converters, 24 bits is around
 $2^{24} = 16.78$ Million different levels. If 5V is the maximum voltage,
 the minimum would have to be $\frac{5V}{2^{24}} \approx 298nV$. That
 level is roughly equivalent to the noise in a 50 Ohm resistor with a
@@ -64,6 +64,16 @@ that $SNR = 6.02*Bits +
 DAC with 120dB SNR, that equals around $Bits = (120-1.76)/6.02 =
 19.64$. In other words, the last four bits of your SACD player is
 probably noise!
+
+[^sacd]: This paragraph is from the mid-2000s, when music came on
+    discs. The compact disc (CD), launched by Philips and Sony in 1982,
+    stores two channels of 16-bit samples at 44.1 kHz, read from a
+    spinning disc by a laser. The super audio CD (SACD), from the same
+    two companies in 1999, stores the music as a 1-bit sigma-delta
+    stream at 2.8224 MHz, 64 times the CD rate - the oversampled,
+    noise-shaped signal of the chapter on sigma-delta ADCs. Both have
+    since given way to streaming, but the argument stands: a 24-bit
+    converter promises more than any circuit can deliver.
 -->
 
 <!--pan_skip: -->
