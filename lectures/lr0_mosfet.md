@@ -2203,54 +2203,14 @@ Threshold mismatch between the two input transistors appears directly as an inpu
 
 ---
 
-## Transistor Noise
+## Noise equations
 
 <!--pan_doc:
 
 Mismatch is randomness frozen in at manufacturing; noise is randomness
-that keeps happening while the circuit runs. Three flavors matter in a
-MOSFET, and they are connected: popcorn noise is one trap doing its thing,
-flicker noise is the chorus of many traps, and thermal noise is simply hot
-charge.
-
--->
-
-**Thermal noise**
-Random scattering of carriers in the channel 
-$$ PSD_{TH}(f) = \text{Constant}$$
-
-
-**Popcorn noise**
-Carriers get "stuck" in oxide traps (dangling bonds) for a while. Can cause a short-lived (seconds to minutes) shift in threshold voltage
-$$ PSD_{GR}(f) \propto \text{Lorentzian shape} \approx \frac{A}{1 + \left(\frac{f}{f_0}\right)^2}$$
-
-**Flicker noise**
-Assume there are many sources of popcorn noise at different energy levels and time constants, then the sum of the spectral densities approaches flicker noise.
-$$ PSD_{flicker}(f) \propto \frac{1}{f} $$
-
-![fit](../media/rts_noise_tikz.pdf)
-
-<!--pan_doc:
-<sub>Figure 46: A single trap gives a two-level random telegraph signal (top) whose spectrum is a Lorentzian, flat then falling as $1/f^2$ (middle). Forty traps with time constants spread over three decades sum to a straight $1/f$, measured slope $-1.02$ between 100 Hz and 10 kHz (bottom)</sub>
-
-The bottom panel is the argument of the last three paragraphs made
-visible, and it is worth noticing that nothing was fitted to make it
-come out: forty Lorentzians with corners spread evenly in log frequency
-were added up, and the sum is $1/f$ to within two percent over the band
-where those corners lie. Above the corner of the fastest trap the line
-steepens back towards $1/f^2$, because there are no faster traps left to
-hold the slope up. Real flicker noise ends the same way and for the same
-reason, which is why a measured $1/f$ corner is a statement about the
-traps in that process rather than a universal constant.
-
-The drain current jumps between discrete levels as single carriers are trapped and released - visible directly in the time domain on small devices.
--->
-
----
-
-## Noise equations
-
-<!--pan_doc:
+that keeps happening while the circuit runs. The next chapter, Noise,
+covers where it comes from: thermal noise from hot charge, and flicker
+noise from traps in the oxide, one trap at a time.
 
 For hand calculation two spectral densities are enough. The channel is a
 piece of resistive silicon, so it makes thermal noise; the oxide
@@ -2281,8 +2241,7 @@ cares about gate area. The corner $f_c$ where they cross can sit anywhere
 from kilohertz to beyond a hundred megahertz in nanoscale CMOS, so never
 assume flicker is a low frequency detail. If flicker hurts: more area, a
 PMOS input pair (holes run a little deeper, away from the interface
-traps), or the circuit tricks - chopping and autozeroing - from the noise
-chapter.
+traps), or the circuit tricks - chopping and autozeroing.
 
 -->
 

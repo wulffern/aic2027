@@ -6,7 +6,7 @@ The lectures stay Deckset source; this writes a Marp copy to
 With --site DIR it renders every deck given into DIR in one marp-cli run,
 PDF and HTML, and copies the figures the HTML decks load to DIR/media.
 
-    python3 py/marp.py lectures/lr1_transistor_noise.md --html --pdf
+    python3 py/marp.py lectures/lr0_noise.md --html --pdf
     make marp        # the Makefile's lectures into docs/assets/marp
 
 What changes on the way:
