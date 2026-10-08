@@ -63,14 +63,22 @@ jobs:
         with:
           submodules: recursive
 
-      # Rolling cache, same scheme as the standalone shards: restore the
-      # newest snapshot, save a fresh one under a unique key. Hits are
-      # decided per figure inside py/tikzcache.py on a content hash.
+      # Cache keyed on the figure inputs, same scheme as the standalone
+      # shards: restore the exact or newest snapshot, save only when the
+      # inputs changed. Hits are decided per figure inside py/tikzcache.py
+      # on a content hash, so the key only decides when to save. It is
+      # computed once here, before the build writes into media/.
+      - name: TikZ cache key
+        id: tikzkey
+        shell: bash
+        run: echo "key=tikz-figures-${{ hashFiles('tikz/**', 'cictikz/**', 'py/tikzcache.py') }}" >> "$GITHUB_OUTPUT"
+
       - name: Restore TikZ figure cache
+        id: tikzcache
         uses: actions/cache/restore@v6
         with:
           path: ~/.cache/aic-tikz
-          key: tikz-figures-${{ github.run_id }}
+          key: ${{ steps.tikzkey.outputs.key }}
           restore-keys: |
             tikz-figures-
 
@@ -84,10 +92,10 @@ jobs:
 
       - name: Save TikZ figure cache
         uses: actions/cache/save@v6
-        if: always()
+        if: always() && steps.tikzcache.outputs.cache-hit != 'true'
         with:
           path: ~/.cache/aic-tikz
-          key: tikz-figures-${{ github.run_id }}
+          key: ${{ steps.tikzkey.outputs.key }}
 
       - name: Prepare shared sources
         shell: bash
@@ -184,14 +192,22 @@ jobs:
           name: prepared-sources
           path: .
 
-      # Rolling cache: restore the newest snapshot for this shard, save a
-      # fresh one under a unique key. Hits are decided per chapter inside
-      # py/pdfcache.py on a content hash, not by this key.
+      # Cache keyed on the chapter inputs: restore the exact or newest
+      # snapshot for this shard, save only when the inputs changed. Hits
+      # are decided per chapter inside py/pdfcache.py on a content hash,
+      # so the key only decides when to save. Computed once, before the
+      # build writes into media/.
+      - name: Standalone cache key
+        id: pdfkey
+        shell: bash
+        run: echo "key=standalone-pdf-${{ matrix.shard }}-${{ hashFiles('lectures/**', 'media/**', 'tikz/**', 'cictikz/**', 'pdf/**', 'py/**') }}" >> "$GITHUB_OUTPUT"
+
       - name: Restore standalone PDF cache
+        id: pdfcache
         uses: actions/cache/restore@v6
         with:
           path: ~/.cache/aic-standalone
-          key: standalone-pdf-${{ matrix.shard }}-${{ github.run_id }}
+          key: ${{ steps.pdfkey.outputs.key }}
           restore-keys: |
             standalone-pdf-${{ matrix.shard }}-
 
@@ -203,10 +219,10 @@ jobs:
 
       - name: Save standalone PDF cache
         uses: actions/cache/save@v6
-        if: always()
+        if: always() && steps.pdfcache.outputs.cache-hit != 'true'
         with:
           path: ~/.cache/aic-standalone
-          key: standalone-pdf-${{ matrix.shard }}-${{ github.run_id }}
+          key: ${{ steps.pdfkey.outputs.key }}
 
       - name: Package standalone shard
         shell: bash

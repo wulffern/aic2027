@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Overview
 
 This is **aic2027** — course materials for *TFE4188 Advanced Integrated Circuits
-2026* by Carsten Wulff. The repo generates:
+2027* by Carsten Wulff. The repo generates:
 
 - A **Jekyll website** deployed to GitHub Pages at `wulffern.github.io/aic2027`
   — the live site is the just-the-docs **book flavor** in `docs-book/`,
