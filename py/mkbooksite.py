@@ -87,7 +87,7 @@ def write_page(path, title, nav_order, permalink, body, extra=None):
 #- Chapters sort after the top level pages, which take nav_order 0 to 6.
 CHAPTER_NAV_BASE = 10
 
-BASEURL = "/aic2026"
+BASEURL = "/aic2027"
 
 #- The sidebar used to group the chapters into these parts, each with a
 #  landing page at its own URL. The grouping is gone - the chapters are
