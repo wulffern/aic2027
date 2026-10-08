@@ -28,11 +28,11 @@
 section {
   width: 1280px;
   height: 720px;
-  padding: 56px 76px 60px 76px;
+  padding: 40px 56px 46px 56px;
   background: #ffffff;
   color: var(--ink);
   font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 27px;
+  font-size: 33px;
   font-weight: 400;
   line-height: 1.45;
   letter-spacing: -0.003em;
@@ -45,23 +45,14 @@ h1, h2, h3 {
   color: inherit;
   font-weight: 600;
   letter-spacing: -0.022em;
-  margin: 0 0 0.55em 0;
+  margin: 0 0 0.4em 0;
   line-height: 1.12;
 }
 h1 { font-size: 50px; }
 h2 { font-size: 42px; }
 h3 { font-size: 32px; font-weight: 500; color: var(--soft-ink); }
 
-/* the title of an ordinary slide: a short teal dash above it */
-h1:first-child::before, h2:first-child::before {
-  content: "";
-  display: block;
-  width: 44px;
-  height: 4px;
-  border-radius: 2px;
-  margin-bottom: 18px;
-  background: var(--accent);
-}
+/* the title of an ordinary slide: just the words */
 
 p, ul, ol { margin: 0.35em 0; }
 p, li { color: var(--soft-ink); }
@@ -112,7 +103,8 @@ p > img:only-child {
 
 /* ---- maths ---- */
 
-mjx-container { font-size: 110%; color: var(--ink); }
+mjx-container { font-size: 112%; color: var(--ink); }
+mjx-container[display="true"] { font-size: 150%; }
 mjx-container[display="true"] {
   margin: 0.5em 0 !important;
 }
@@ -124,7 +116,7 @@ pre {
   border: none;
   border-radius: 12px;
   padding: 0.9em 1.1em;
-  font-size: 19px;
+  font-size: 21px;
   line-height: 1.5;
 }
 code {
@@ -140,7 +132,7 @@ pre code { background: none; padding: 0; }
 
 table {
   border-collapse: collapse;
-  font-size: 26px;
+  font-size: 30px;
   margin: 0.5em auto;
   font-variant-numeric: tabular-nums;
 }
@@ -154,15 +146,13 @@ th, td {
 th {
   border-bottom: 2px solid var(--accent);
   font-weight: 600;
-  font-size: 0.72em;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  font-size: 0.85em;
   color: var(--ink);
 }
 tr:last-child td { border-bottom: none; }
 table tr:nth-child(2n) { background: transparent; }
 
-sub { font-size: 17px; color: var(--muted); vertical-align: baseline; }
+sub { font-size: 20px; color: var(--muted); vertical-align: baseline; }
 
 /* ---- columns: [.column] ---- */
 
@@ -191,12 +181,6 @@ section.section h1, section.section h2 {
   margin: 0;
   color: inherit;
 }
-section.section h1::before, section.section h2::before {
-  width: 64px;
-  height: 6px;
-  border-radius: 3px;
-  margin-bottom: 28px;
-}
 
 /* ---- the footer and page number ---- */
 
@@ -205,12 +189,12 @@ footer, section::after {
   color: var(--muted);
   letter-spacing: 0.02em;
 }
-footer { left: 76px; bottom: 22px; }
-section::after { right: 76px; bottom: 22px; font-variant-numeric: tabular-nums; }
+footer { left: 56px; bottom: 14px; }
+section::after { right: 56px; bottom: 14px; font-variant-numeric: tabular-nums; }
 
 /* ---- a slide with a lot on it: one step smaller ---- */
 
-section.dense { font-size: 22px; }
+section.dense { font-size: 26px; }
 section.dense li { margin: 0.12em 0; }
 section.dense h1, section.dense h2 { font-size: 36px; }
 
@@ -231,12 +215,6 @@ section.title h1 {
   max-width: 880px;
   margin-bottom: 0.4em;
 }
-section.title h1::before {
-  width: 72px;
-  height: 6px;
-  border-radius: 3px;
-  margin-bottom: 36px;
-}
 section.title p {
   color: var(--muted);
   font-size: 22px;
@@ -246,7 +224,12 @@ section.title p {
 
 /* ---- a long derivation: smaller maths, so it fits ---- */
 
-section.mathdense mjx-container { font-size: 88%; }
+section.mathdense mjx-container,
+section.mathdense mjx-container[display="true"] { font-size: 100%; }
+section.mathdense table { font-size: 25px; }
+section.mathxdense mjx-container,
+section.mathxdense mjx-container[display="true"] { font-size: 86%; }
+section.mathxdense mjx-container[display="true"] { margin: 0.2em 0 !important; }
 section.mathdense mjx-container[display="true"] { margin: 0.3em 0 !important; }
 
 /* ---- a slide that sets its own text colour, [.text: c] ---- */
@@ -266,4 +249,40 @@ section.inverted {
 section:not(.title):not(.section):not(:has(> h1, > h2, > h3, > .columns)) {
   justify-content: center;
   text-align: center;
+}
+
+/* ---- a title and a figure: the figure is the slide ---- */
+
+section.figure { padding: 22px 32px 34px 32px; }
+section.figure h1, section.figure h2, section.figure h3 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  margin: 0 0 6px 0;
+}
+
+/* ---- the title in the top left corner, the body gets the slide ---- */
+
+section:not(.title):not(.section) > h1:first-child,
+section:not(.title):not(.section) > h2:first-child {
+  position: absolute;
+  top: 18px;
+  left: 28px;
+  right: 28px;
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: -0.015em;
+}
+section:not(.title):not(.section):has(> h1:first-child, > h2:first-child) {
+  padding: 74px 48px 40px 48px;
+  justify-content: center;
+}
+section.figure:has(> h1:first-child, > h2:first-child) {
+  padding: 44px 24px 30px 24px;
+}
+section.figure > h1:first-child, section.figure > h2:first-child {
+  top: 14px;
+  left: 28px;
+  font-size: 17px;
 }

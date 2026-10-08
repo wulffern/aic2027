@@ -241,6 +241,18 @@ def convert_slide(lines, src_dir, first=False, meta={}):
             blocks += 1
         if n % 2:
             inside = not inside
+    # a title and a figure, nothing else: the figure is the slide, and
+    # the title shrinks to a quiet label (the book keeps it as a heading)
+    shown = [l.strip() for l, n in zip(lines, notes) if not n and l.strip()
+             and not l.strip().startswith("<!--")
+             and not DIRECTIVE_RE.match(l.strip())]
+    heads = [l for l in shown if l.startswith("#") and not FIT_RE.match(l)]
+    figure = (len(heads) == 1 and len(shown) > 1
+              and all(IMG_RE.fullmatch(l) for l in shown if l not in heads))
+    # a title and nothing else on the slide (the words are in the notes):
+    # it is a divider, so it looks like one
+    if len(heads) == 1 and len(shown) == 1 and not first:
+        section = True
     if section:
         classes.append("section")
     elif first:
@@ -248,9 +260,15 @@ def convert_slide(lines, src_dir, first=False, meta={}):
         body.append("")
         body.append(" · ".join(x for x in (meta.get("footer"), meta.get("date"))
                                 if x))
-    elif words > 110:
+    elif figure:
+        classes.append("figure")
+    elif words > 70:
         classes.append("dense")
-    if (maths > 10 or blocks >= 6) and not section:
+    rows = sum(1 for l in body if l.strip().startswith("|")
+               and not set(l.strip()) <= set("|:- "))
+    if maths > 10 and not section:
+        classes.append("mathxdense")
+    elif (blocks >= 6 or blocks + rows / 2 >= 5) and not section:
         classes.append("mathdense")
     if classes:
         # Marp keeps only the last _class, so give it all of them at once
