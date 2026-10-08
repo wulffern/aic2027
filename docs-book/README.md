@@ -36,5 +36,5 @@ one line in either direction.
 ## URLs
 
 All URLs of the legacy site are preserved: chapter permalinks
-(`/aic2026/mosfets` etc.), the top pages (`/plan/`, `/downloads/`, ...),
-and everything under `/aic2026/assets/`.
+(`/aic2027/mosfets` etc.), the top pages (`/plan/`, `/downloads/`, ...),
+and everything under `/aic2027/assets/`.

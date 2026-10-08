@@ -1383,7 +1383,7 @@ Bang for the buck
 ![right fit](../media/gmid_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 34: Simulated $g_m/I_D$ of a sky130 nfet_01v8 ([gmid.py](https://github.com/wulffern/aic2026/blob/main/ex/gmid.py))</sub>
+<sub>Figure 34: Simulated $g_m/I_D$ of a sky130 nfet_01v8 ([gmid.py](https://github.com/wulffern/aic2027/blob/main/ex/gmid.py))</sub>
 
 The transconductance per unit current is the "bang for the buck" of a
 transistor, and the figure shows both hand-calculation limits on top of the

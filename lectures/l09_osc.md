@@ -15,7 +15,7 @@ date: 2026-03-20
 
 <!--
 
-Lecture Notes: https://analogicus.com/aic2026/oscillators
+Lecture Notes: https://analogicus.com/aic2027/oscillators
 
 00:00 Introduction
 01:28 Cesium clocks
@@ -263,7 +263,7 @@ where the impedance goes to infinity: *parallel resonance*, the motional branch 
 
 -->
 
-See [Crystal oscillator impedance](https://github.com/wulffern/aic2026/blob/main/jupyter/xosc.ipynb) for a detailed explanation, or the [interactive version](https://wulffern.github.io/aic2026/assets/examples/xosc.html) where the motional and static elements are sliders and the pulling is worked out for you.
+See [Crystal oscillator impedance](https://github.com/wulffern/aic2027/blob/main/jupyter/xosc.ipynb) for a detailed explanation, or the [interactive version](https://wulffern.github.io/aic2027/assets/examples/xosc.html) where the motional and static elements are sliders and the pulling is worked out for you.
 
 ---
 

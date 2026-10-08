@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quantization &mdash; aic2026</title>
+<title>Quantization &mdash; aic2027</title>
 <link rel="stylesheet" href="common/aic.css">
 </head>
 <body>
@@ -12,8 +12,8 @@
   <h1>QUANTIZATION</h1>
   <div class="sub">
     <a href="index.html">&larr; all examples</a> &middot;
-    interactive version of <a href="https://github.com/wulffern/aic2026/blob/main/ex/q.py">ex/q.py</a>
-    and <a href="https://github.com/wulffern/aic2026/blob/main/ex/quantization.py">ex/quantization.py</a> &middot;
+    interactive version of <a href="https://github.com/wulffern/aic2027/blob/main/ex/q.py">ex/q.py</a>
+    and <a href="https://github.com/wulffern/aic2027/blob/main/ex/quantization.py">ex/quantization.py</a> &middot;
     data converters
   </div>
 </header>
@@ -226,8 +226,8 @@ def freqDomain(x,hann=True):
     X = np.fft.fftshift(np.fft.fft(np.multiply(w[0:N],x)))
     return X/np.max(np.abs(X))   # normalise to max output power</code></pre>
   <p class="src">
-    Source: <a href="https://github.com/wulffern/aic2026/blob/main/ex/q.py">ex/q.py</a>,
-    <a href="https://github.com/wulffern/aic2026/blob/main/ex/quantization.py">ex/quantization.py</a>
+    Source: <a href="https://github.com/wulffern/aic2027/blob/main/ex/q.py">ex/q.py</a>,
+    <a href="https://github.com/wulffern/aic2027/blob/main/ex/quantization.py">ex/quantization.py</a>
     (the same thing with <code>np.sign()</code>, i.e. a real one-bit case).
     This page defaults to a conventional B-bit converter &mdash; 2<sup>B</sup>
     levels, step 2/2<sup>B</sup>, mid-riser, saturating at the end codes &mdash;
@@ -237,7 +237,7 @@ def freqDomain(x,hann=True):
 </div>
 
 <footer>
-  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2026/">aic2026</a>
+  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2027/">aic2027</a>
 </footer>
 
 <script src="common/plot.js"></script>

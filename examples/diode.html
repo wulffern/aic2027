@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Diode voltage over temperature &mdash; aic2026</title>
+<title>Diode voltage over temperature &mdash; aic2027</title>
 <link rel="stylesheet" href="common/aic.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
   <h1>DIODE VS TEMPERATURE</h1>
   <div class="sub">
     <a href="index.html">&larr; all examples</a> &middot;
-    interactive version of <a href="https://github.com/wulffern/aic2026/blob/main/ex/vd.py">ex/vd.py</a> &middot;
+    interactive version of <a href="https://github.com/wulffern/aic2027/blob/main/ex/vd.py">ex/vd.py</a> &middot;
     diodes, references and bias
   </div>
 </header>
@@ -199,7 +199,7 @@ Vd  = k*T/q*np.log(I_c/I_s)
 line = np.polynomial.polynomial.polyfit(T,Vd,1)
 vd_lin_err = Vd - (T*line[1] + line[0])</code></pre>
   <p class="src">
-    Source: <a href="https://github.com/wulffern/aic2026/blob/main/ex/vd.py">ex/vd.py</a>,
+    Source: <a href="https://github.com/wulffern/aic2027/blob/main/ex/vd.py">ex/vd.py</a>,
     based on Streetman. The diffusion constants are fixed at their 300 K values
     (D<sub>n</sub> = 36, D<sub>p</sub> = 12 cm<sup>2</sup>/s), as in the script;
     the <a href="antenna-leakage.html">antenna leakage example</a> adds their
@@ -208,7 +208,7 @@ vd_lin_err = Vd - (T*line[1] + line[0])</code></pre>
 </div>
 
 <footer>
-  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2026/">aic2026</a>
+  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2027/">aic2027</a>
 </footer>
 
 <script src="common/plot.js"></script>

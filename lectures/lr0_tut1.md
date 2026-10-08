@@ -17,7 +17,7 @@ date: 2025-10-26
 Before you start the tutorial you need to have the tools installed. 
 
 If you're a student of mine, then you must install the tools locally on your PC.
-Read check [The Tools](https://analogicus.com/aic2026/the_tools) chapter first.
+Read check [The Tools](https://analogicus.com/aic2027/the_tools) chapter first.
 
 If you're the impatient kind, then check <https://analogicus.com/aicex/> which
 shows how to start the docker image. 

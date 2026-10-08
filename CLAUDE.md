@@ -4,8 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is **aic2026** — course materials for *TFE4188 Advanced Integrated Circuits 2026* by Carsten Wulff. The repo generates:
-- A **Jekyll website** deployed to GitHub Pages at `wulffern.github.io/aic2026` — the live site is the just-the-docs **book flavor** in `docs-book/`, assembled by `py/mkbooksite.py` from the posts in `docs/` (`SITE_FLAVOR: book` in `.github/workflows/matrix_build.yaml`; the legacy minima site in `docs/` is rollback only)
+This is **aic2027** — course materials for *TFE4188 Advanced Integrated Circuits 2027* by Carsten Wulff. The repo generates:
+- A **Jekyll website** deployed to GitHub Pages at `wulffern.github.io/aic2027` — the live site is the just-the-docs **book flavor** in `docs-book/`, assembled by `py/mkbooksite.py` from the posts in `docs/` (`SITE_FLAVOR: book` in `.github/workflows/matrix_build.yaml`; the legacy minima site in `docs/` is rollback only)
 - **Standalone PDFs** (one per lecture) and a combined **PDF book** (`.build/aic.pdf`) and **ebook** (`.build/aic.epub`)
 
 Source lectures are Markdown files in `lectures/` that are processed by `py/lecture.py` into both Jekyll posts and LaTeX.

@@ -199,7 +199,7 @@ def make_slides_page(order, posts):
         if lid not in decks:
             continue
         title = re.search(r"title:\s*(.*)", posts[lid]).group(1).strip()
-        lines.append(f"- [{title}](/aic2026/assets/html/{lid}.html)")
+        lines.append(f"- [{title}](/aic2027/assets/html/{lid}.html)")
         listed.add(lid)
 
     write_page(

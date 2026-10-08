@@ -6,10 +6,10 @@
 #   plugins: [jekyll-remote-theme, jekyll-seo-tag]
 
 title: Advanced Integrated Circuits
-description: Lectures on Advanced Integrated Circuits 2026
+description: Lectures on Advanced Integrated Circuits 2027
 author: Carsten Wulff
 
-baseurl: "/aic2026"
+baseurl: "/aic2027"
 url: "https://wulffern.github.io"
 
 theme: just-the-docs
@@ -24,9 +24,9 @@ heading_anchors: true
 
 aux_links:
   "PDF book":
-    - "/aic2026/assets/aic.pdf"
+    - "/aic2027/assets/aic.pdf"
   "GitHub":
-    - "https://github.com/wulffern/aic2026"
+    - "https://github.com/wulffern/aic2027"
   "Scholar":
     - "https://scholar.google.com/citations?user=uMepikoAAAAJ&hl=en&oi=ao"
 
@@ -47,4 +47,4 @@ callouts:
 # the chapters live in a subdirectory
 include: ["chapters"]
 
-footer_content: "Carsten Wulff 2026 &mdash; <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>"
+footer_content: "Carsten Wulff 2027 &mdash; <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>"

@@ -209,7 +209,7 @@ The impedance, from [Ohm's law](https://en.wikipedia.org/wiki/Ohm%27s_law) is
  
 <!--pan_doc:
 
-And from [SI units](https://analogicus.com/aic2026/a_refresher#there-are-standard-units-of-measurement) units we can see current is charge per unit time. Once per clock period the capacitor is charged and then discharged, so what flows in from the input is the *difference* between the charge held at the end of each phase, delivered $f_\phi$ times a second:
+And from [SI units](https://analogicus.com/aic2027/a_refresher#there-are-standard-units-of-measurement) units we can see current is charge per unit time. Once per clock period the capacitor is charged and then discharged, so what flows in from the input is the *difference* between the charge held at the end of each phase, delivered $f_\phi$ times a second:
 -->
 
  $$ I_{I} = \frac{\Delta Q}{\Delta t} = \left(Q_{\phi1\$} - Q_{\phi2\$}\right) f_{\phi}$$
@@ -550,7 +550,7 @@ not coherent.
 The alternative to coherent sampling is to apply a window function before the FFT, that's the reason for the 
 Hanning window below.
 
-There is an [interactive version of this example](https://wulffern.github.io/aic2026/assets/examples/sampling.html) where
+There is an [interactive version of this example](https://wulffern.github.io/aic2027/assets/examples/sampling.html) where
 the tone frequency, the sampling pattern and the window are sliders. Turning the
 Hanning window off, and then turning coherent sampling on, is worth thirty
 seconds of your time.
@@ -559,7 +559,7 @@ seconds of your time.
 
 ---
 
-[dt.py](https://github.com/wulffern/aic2026/blob/main/ex/dt.py) - [interactive](https://wulffern.github.io/aic2026/assets/examples/sampling.html)
+[dt.py](https://github.com/wulffern/aic2027/blob/main/ex/dt.py) - [interactive](https://wulffern.github.io/aic2027/assets/examples/sampling.html)
 
 ```python 
 #- Create a time vector
@@ -888,13 +888,13 @@ The two spectra share the same y-axis, so the attenuation can be read directly. 
 ($\vert z\vert = 0.89$, pole angle $\approx 0.046\,f_s$): the image near the pole angle is picked out and even amplified a little by the
 resonance, while the spectral copies further out drop with 40 dB/decade.
 
-The [interactive version of this example](https://wulffern.github.io/aic2026/assets/examples/iir.html) adds the pole
+The [interactive version of this example](https://wulffern.github.io/aic2027/assets/examples/iir.html) adds the pole
 position as a slider, and draws the z-plane next to the spectrum, so you can
 watch the pole move inside the unit circle and the corner frequency follow it.
 
 -->
 
-[iir.py](https://github.com/wulffern/aic2026/blob/main/ex/iir.py) - [interactive](https://wulffern.github.io/aic2026/assets/examples/iir.html)
+[iir.py](https://github.com/wulffern/aic2027/blob/main/ex/iir.py) - [interactive](https://wulffern.github.io/aic2027/assets/examples/iir.html)
 
 ---
 

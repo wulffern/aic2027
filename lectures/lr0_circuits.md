@@ -65,7 +65,7 @@ In all our circuits we will need to pick the right size, but how should we do it
 
 By now you should know that MOSFETs have different regions of operation. Related to the $V_{GS}$ we talk about 
 weak inversion, moderate inversion and strong inversion. These names correspond directly to the density of 
-charge carriers in the thin inversion layer underneath the oxide in the channel. See [MOSFETs](https://analogicus.com/aic2026/mosfets) 
+charge carriers in the thin inversion layer underneath the oxide in the channel. See [MOSFETs](https://analogicus.com/aic2027/mosfets) 
 lecture for details. 
 
 In Figure 3 we can see how the log of the current changes behavior at low $V_{GS}$ versus at high $V_{GS}$. 
@@ -966,7 +966,7 @@ two common source stages around one tail current so only the difference
 matters.
 
 Put a differential pair on top of a current mirror and you have built the
-five transistor OTA - which is where the [OTA chapter](https://analogicus.com/aic2026/otas)
+five transistor OTA - which is where the [OTA chapter](https://analogicus.com/aic2027/otas)
 picks up.
 
 -->

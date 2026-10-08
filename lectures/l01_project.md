@@ -11,9 +11,9 @@ date: 2026-01-09
 
 AIC26 - The Project
 
-Notes: https://analogicus.com/aic2026/the_project
+Notes: https://analogicus.com/aic2027/the_project
 Example of temperature sensor: https://analogicus.com/lelo_temp_sky130a/
-Tutorial: https://analogicus.com/aic2026/sky130nm_tutorial
+Tutorial: https://analogicus.com/aic2027/sky130nm_tutorial
 
 00:00 Introduction
 01:55 The challenge: design a temperature sensor
@@ -381,7 +381,7 @@ getting some points on the layout
 
 __Goal__: force you to install the tools, and get you started. 
 
-Follow [Sky130nm Tutorial](https://analogicus.com/aic2026/sky130nm_tutorial)
+Follow [Sky130nm Tutorial](https://analogicus.com/aic2027/sky130nm_tutorial)
 
 __Delivery__: Submit link to your github repository on blackboard
 
@@ -401,7 +401,7 @@ complementary to temperature (CTAT).
 
 For this purpose it's common to use "Bandgap" circuits. We'll learn about them
 in the course, but if you don't want to wait then  you should read
-<https://analogicus.com/aic2026/references_and_bias>
+<https://analogicus.com/aic2027/references_and_bias>
 and ask me questions in reference and bias lecture.
 
 In the git repository for your group you'll create schematics for the bandgap
@@ -523,7 +523,7 @@ __Goal__: Write a report
 
 __Delivery__: A PDF copy of the report in Inspera. You'll all write an individual report. The report shall be in the IEEE template. 
 
-See further details in <https://analogicus.com/aic2026/how_to_write_a_project_report>
+See further details in <https://analogicus.com/aic2027/how_to_write_a_project_report>
 
 
 --- 

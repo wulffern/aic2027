@@ -56,7 +56,7 @@ FIELD_ORDER = ("author", "title", "journal", "booktitle", "publisher", "school",
                "volume", "number", "year", "pages", "doi", "url")
 
 CONTACT = os.environ.get("CROSSREF_MAILTO", "")
-USER_AGENT = "aic2026-linkbib (https://github.com/wulffern/aic2026)"
+USER_AGENT = "aic2027-linkbib (https://github.com/wulffern/aic2027)"
 
 # Crossref is happy with the honest agent string above. Xplore answers 418 to
 # it, and to any client that does not present browser headers, so its two

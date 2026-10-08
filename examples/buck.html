@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Buck converter (PWM) &mdash; aic2026</title>
+<title>Buck converter (PWM) &mdash; aic2027</title>
 <link rel="stylesheet" href="common/aic.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
   <div class="sub">
     <a href="index.html">&larr; all examples</a> &middot;
     interactive version of
-    <a href="https://github.com/wulffern/aic2026/blob/main/jupyter/buck.ipynb">jupyter/buck.ipynb</a> &middot;
+    <a href="https://github.com/wulffern/aic2027/blob/main/jupyter/buck.ipynb">jupyter/buck.ipynb</a> &middot;
     voltage regulators
   </div>
 </header>
@@ -218,7 +218,7 @@
     io[i] = 1/R * vo[i-1]
     vo[i] = vo[i-1] + 1/C * ((ix[i] + ix[i-1])/2 - (io[i] + io[i-1])/2)*dt</code></pre>
   <p class="src">
-    Source: <a href="https://github.com/wulffern/aic2026/blob/main/jupyter/buck.ipynb">jupyter/buck.ipynb</a>.
+    Source: <a href="https://github.com/wulffern/aic2027/blob/main/jupyter/buck.ipynb">jupyter/buck.ipynb</a>.
     The integration is the notebook's, verbatim. Building this page turned up a
     real problem in that notebook, since fixed: it averaged over the second half
     of a 10&nbsp;&micro;s run while R&middot;C is 1&nbsp;ms, so the tank was
@@ -231,7 +231,7 @@
 </div>
 
 <footer>
-  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2026/">aic2026</a>
+  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2027/">aic2027</a>
 </footer>
 
 <script src="common/plot.js"></script>

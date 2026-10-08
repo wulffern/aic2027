@@ -4,7 +4,7 @@ date: 2025-10-27
 
 Before you attack this tutorial I would recommend you go through the regular
 [Sky130nm
-tutorial](https://analogicus.com/aic2026/sky130nm_tutorial)
+tutorial](https://analogicus.com/aic2027/sky130nm_tutorial)
 
 ## The circuit
 

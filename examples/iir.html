@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>First order IIR filter &mdash; aic2026</title>
+<title>First order IIR filter &mdash; aic2027</title>
 <link rel="stylesheet" href="common/aic.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
   <h1>FIRST ORDER IIR</h1>
   <div class="sub">
     <a href="index.html">&larr; all examples</a> &middot;
-    interactive version of <a href="https://github.com/wulffern/aic2026/blob/main/ex/iir.py">ex/iir.py</a> &middot;
+    interactive version of <a href="https://github.com/wulffern/aic2027/blob/main/ex/iir.py">ex/iir.py</a> &middot;
     switched capacitor circuits
   </div>
 </header>
@@ -168,7 +168,7 @@ y = np.zeros(N)
 for i in range(2,N):
     y[i] = b*x_sn[i-1] + 2*a*y[i-1] - (a*a + b*b)*y[i-2]</code></pre>
   <p class="src">
-    Source: <a href="https://github.com/wulffern/aic2026/blob/main/ex/iir.py">ex/iir.py</a>.
+    Source: <a href="https://github.com/wulffern/aic2027/blob/main/ex/iir.py">ex/iir.py</a>.
     This page makes the <code>a</code> coefficient a slider so you can watch
     the pole move.
     There are faster ways to do this in Python; see
@@ -177,7 +177,7 @@ for i in range(2,N):
 </div>
 
 <footer>
-  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2026/">aic2026</a>
+  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2027/">aic2027</a>
 </footer>
 
 <script src="common/plot.js"></script>

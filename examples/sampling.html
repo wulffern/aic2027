@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sampling &mdash; aic2026</title>
+<title>Sampling &mdash; aic2027</title>
 <link rel="stylesheet" href="common/aic.css">
 </head>
 <body>
@@ -12,8 +12,8 @@
   <h1>SAMPLING</h1>
   <div class="sub">
     <a href="index.html">&larr; all examples</a> &middot;
-    interactive version of <a href="https://github.com/wulffern/aic2026/blob/main/ex/dt.py">ex/dt.py</a>
-    and <a href="https://github.com/wulffern/aic2026/blob/main/ex/sub.py">ex/sub.py</a> &middot;
+    interactive version of <a href="https://github.com/wulffern/aic2027/blob/main/ex/dt.py">ex/dt.py</a>
+    and <a href="https://github.com/wulffern/aic2027/blob/main/ex/sub.py">ex/sub.py</a> &middot;
     switched capacitor circuits
   </div>
 </header>
@@ -185,15 +185,15 @@ w = np.hanning(N+1)
 X_s  = np.fft.fftshift(np.fft.fft(np.multiply(w[0:N],x_s)))
 X_sn = np.fft.fftshift(np.fft.fft(np.multiply(w[0:N],x_sn)))</code></pre>
   <p class="src">
-    Source: <a href="https://github.com/wulffern/aic2026/blob/main/ex/dt.py">ex/dt.py</a>,
-    <a href="https://github.com/wulffern/aic2026/blob/main/ex/sub.py">ex/sub.py</a>.
+    Source: <a href="https://github.com/wulffern/aic2027/blob/main/ex/dt.py">ex/dt.py</a>,
+    <a href="https://github.com/wulffern/aic2027/blob/main/ex/sub.py">ex/sub.py</a>.
     The page uses the same formulas; the noise is seeded so the floor stays put
     while you drag a slider.
   </p>
 </div>
 
 <footer>
-  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2026/">aic2026</a>
+  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2027/">aic2027</a>
 </footer>
 
 <script src="common/plot.js"></script>

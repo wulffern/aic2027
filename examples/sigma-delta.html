@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>First order sigma-delta &mdash; aic2026</title>
+<title>First order sigma-delta &mdash; aic2027</title>
 <link rel="stylesheet" href="common/aic.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
   <h1>NOISE SHAPING</h1>
   <div class="sub">
     <a href="index.html">&larr; all examples</a> &middot;
-    interactive version of <a href="https://github.com/wulffern/aic2026/blob/main/ex/sd_1st.py">ex/sd_1st.py</a> &middot;
+    interactive version of <a href="https://github.com/wulffern/aic2027/blob/main/ex/sd_1st.py">ex/sd_1st.py</a> &middot;
     data converters
   </div>
 </header>
@@ -217,14 +217,14 @@ for n in range(1,M):
     x[n] = x[n-1] + (u[n]-y_sd[n-1])
     y_sd[n] = np.round(x[n]*2**bits + dither*np.random.randn()/4)/2**bits</code></pre>
   <p class="src">
-    Source: <a href="https://github.com/wulffern/aic2026/blob/main/ex/sd_1st.py">ex/sd_1st.py</a>.
+    Source: <a href="https://github.com/wulffern/aic2027/blob/main/ex/sd_1st.py">ex/sd_1st.py</a>.
     The script trims the first two samples to skip the settling; this page keeps
     them, because the Hann window is close to zero there anyway.
   </p>
 </div>
 
 <footer>
-  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2026/">aic2026</a>
+  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2027/">aic2027</a>
 </footer>
 
 <script src="common/plot.js"></script>

@@ -1,5 +1,5 @@
-# aic2026
-Advanced Integrated Circuits 2026
+# aic2027
+Advanced Integrated Circuits 2027
 
 ## License
 
@@ -19,10 +19,18 @@ terms govern that figure rather than the CC BY 4.0 above.
 
 ## New year
 
-- Clone repo into new dir (aic2027)
-- Create git repo for new year
-- Change origin
-- Push
+- Commit and push everything in last year's repo first
+- Create the new repo on GitHub (wulffern/aic<year>)
+- `git clone --single-branch --branch main --recurse-submodules ~/pro/aic<last> ~/data/<year>/aic<year>`
+  and symlink it to `~/pro/aic<year>`
+- Remotes: rename `origin` to `old`, point `old` at last year's GitHub repo,
+  add `origin` for the new one
+- Set the year in `Makefile` (`YEAR`), `docs/_config.yml`, `docs-book/_config.yml`,
+  `version`, `pdf/aic.tex`, and replace the `aic<last>` URLs in `lectures/`,
+  `docs/`, `examples/`, `py/` and `downloads.md`
+- The CI image tags (`aic:2026_slim`, `aic:2026_latest`) name the toolchain,
+  not the course; change them only after building a new image
+- Enable GitHub Pages for the new repo, then push
 
 Generated artifacts are not tracked: `pdf/` holds only sources (the
 build runs in `.build/`), and `media/*_tikz.*` come from `make tikz`.

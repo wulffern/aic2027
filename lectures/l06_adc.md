@@ -569,7 +569,7 @@ $\Delta^2/12$ white noise model would put a flat floor: the total power
 is the same, but the distribution is nothing like it.
 
 If you want to feel this rather than read it, the
-[interactive version](https://wulffern.github.io/aic2026/assets/examples/bessel-quantization.html)
+[interactive version](https://wulffern.github.io/aic2027/assets/examples/bessel-quantization.html)
 puts the bit count on a slider. Walk it up and watch the harmonics fall
 and crowd together, until somewhere around eight bits calling them a
 noise floor finally becomes fair.
@@ -625,7 +625,7 @@ You may have seen the last equation before, now you know where it comes from.
 
 ## Understanding quantization
 
-Below I've tried to visualize the quantization process [q.py](https://github.com/wulffern/aic2026/blob/main/ex/q.py), which also exists as an [interactive page](https://wulffern.github.io/aic2026/assets/examples/quantization.html) where the number of bits is a slider and the SQNR is measured for you. 
+Below I've tried to visualize the quantization process [q.py](https://github.com/wulffern/aic2027/blob/main/ex/q.py), which also exists as an [interactive page](https://wulffern.github.io/aic2027/assets/examples/quantization.html) where the number of bits is a slider and the SQNR is measured for you. 
 
 The left most plot is a sinusoid signal and random      Gaussian noise. The signal is not a continuous time signal, since that's not possible on a digital computer, but it's an approximation. 
 
@@ -905,7 +905,7 @@ For an OSR of 4 we can count four dips in the noise floor, although there are re
 <!--pan_doc:
 <sub>Figure 23: The same FFTs with OSR=4 (right), where the moving-average filter puts three nulls in the noise floor, seen as four dips on this two-sided plot, and the noise power increases close to zero frequency</sub>
 
-The code for the plots is  [osr.py](https://github.com/wulffern/aic2026/blob/main/ex/osr.py). I would encourage you to play a bit with the code, and make sure you understand oversampling. If you would rather drag a slider than edit a file, the [interactive version](https://wulffern.github.io/aic2026/assets/examples/oversampling.html) plots the measured in-band SNR against OSR next to the ideal 3 dB per octave.
+The code for the plots is  [osr.py](https://github.com/wulffern/aic2027/blob/main/ex/osr.py). I would encourage you to play a bit with the code, and make sure you understand oversampling. If you would rather drag a slider than edit a file, the [interactive version](https://wulffern.github.io/aic2027/assets/examples/oversampling.html) plots the measured in-band SNR against OSR next to the ideal 3 dB per octave.
 
 -->
 
@@ -1269,7 +1269,7 @@ The second-order column also shows the crossover discussed above. At $OSR=4$ sec
 ## Python noise-shaping 
 
 I want to demystify noise-shaping modulators. I think one way to do that is
-to show some code. You can find the code at [sd_1st.py](https://github.com/wulffern/aic2026/blob/main/ex/sd_1st.py), and an [interactive version](https://wulffern.github.io/aic2026/assets/examples/sigma-delta.html) that runs the same loop in your browser and decodes the bitstream back into the input. 
+to show some code. You can find the code at [sd_1st.py](https://github.com/wulffern/aic2027/blob/main/ex/sd_1st.py), and an [interactive version](https://wulffern.github.io/aic2027/assets/examples/sigma-delta.html) that runs the same loop in your browser and decodes the bitstream back into the input. 
 
 Below we can see an excerpt. Again pretty stupid code, and I'm sure it's possible to make a faster version (for loops in python are notoriously slow).
 

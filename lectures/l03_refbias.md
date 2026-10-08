@@ -229,7 +229,7 @@ To see the temperature coefficient, I find it easier to re-arrange the equation 
 
 ---
 
-Some algebra (see [Diodes](https://analogicus.com/aic2026/diodes))
+Some algebra (see [Diodes](https://analogicus.com/aic2027/diodes))
  
  $$ V_{BE} = \frac{kT}{q}(\ell  - 3 \ln T) + V_G $$ 
 

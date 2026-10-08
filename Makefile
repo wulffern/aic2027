@@ -2,7 +2,7 @@
 JEKYLL_VERSION=3.8
 SITE=${shell pwd}/docs
 TAG=1
-YEAR=2026
+YEAR=2027
 
 #-
 PYTHON=python3

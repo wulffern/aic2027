@@ -274,7 +274,7 @@ which makes it possible for a private citizen to tape-out their own integrated c
 
 <!--pan_skip: -->
 
-# <https://analogicus.com/aic2026>
+# <https://analogicus.com/aic2027>
 
 
 ---
@@ -434,7 +434,7 @@ my understanding is wrong, then I'll happily discuss.
 **Lectures:**
 Friday at 08:15 in R90
 
-It helps if you read the notes before the lecture, and have questions. Notes at [aic2026](https://analogicus.com/aic2026)
+It helps if you read the notes before the lecture, and have questions. Notes at [aic2027](https://analogicus.com/aic2027)
 
 The "lectures" will be Q & A's on the topic. If no questions, then I'll ramble on.
 
@@ -453,13 +453,13 @@ Groups meet, and work on project.
 
 - [Time schedule](https://www.ntnu.no/studier/emner/TFE4188#tab=timeplan)
 
-- [Lecture plan](https://wulffern.github.io/aic2026/plan/)
+- [Lecture plan](https://wulffern.github.io/aic2027/plan/)
 
-- [Syllabus](https://wulffern.github.io/aic2026/syllabus/)
+- [Syllabus](https://wulffern.github.io/aic2027/syllabus/)
 
 - [Youtube Videos](https://youtube.com/playlist?list=PLybHXZ9FyEhYuu3SJjXBncbR3BEImeZ0H&si=1lManZwmgQJrOQ9q)
 
-- [AIC2026](http://analogicus.com/aic2026/)
+- [AIC2027](http://analogicus.com/aic2027/)
 
 ---
 
@@ -498,7 +498,7 @@ Buy a hard-copy of the book if you don't have that. Don't expect to understand t
 
 ## Compulsory exercise (Milestone 0)
 
-Follow: [Sky130nm Tutorial](https://analogicus.com/aic2026/sky130nm_tutorial)
+Follow: [Sky130nm Tutorial](https://analogicus.com/aic2027/sky130nm_tutorial)
 
 Submit link to your github repository on blackboard
 
@@ -541,7 +541,7 @@ I've made a rather detailed (at least I think so myself) tutorial on how to make
 You have to do that tutorial. It's Milestone 0 of the project and does count towards your final grade.
 -->
 
- [Skywater 130 nm Tutorial](https://analogicus.com/aic2026/sky130nm_tutorial)
+ [Skywater 130 nm Tutorial](https://analogicus.com/aic2027/sky130nm_tutorial)
  
  
 <!--pan_doc:

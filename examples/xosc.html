@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Crystal impedance &mdash; aic2026</title>
+<title>Crystal impedance &mdash; aic2027</title>
 <link rel="stylesheet" href="common/aic.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
   <div class="sub">
     <a href="index.html">&larr; all examples</a> &middot;
     interactive version of
-    <a href="https://github.com/wulffern/aic2026/blob/main/jupyter/xosc.ipynb">jupyter/xosc.ipynb</a> &middot;
+    <a href="https://github.com/wulffern/aic2027/blob/main/jupyter/xosc.ipynb">jupyter/xosc.ipynb</a> &middot;
     oscillators
   </div>
 </header>
@@ -177,7 +177,7 @@ Z = Zin.subs({R:50,Cf:5e-15,Cp:5e-12,L:50e-3})
 func = lambdify(s, Z,'numpy')
 Znum = func(1j*2*np.pi*f)</code></pre>
   <p class="src">
-    Source: <a href="https://github.com/wulffern/aic2026/blob/main/jupyter/xosc.ipynb">jupyter/xosc.ipynb</a>.
+    Source: <a href="https://github.com/wulffern/aic2027/blob/main/jupyter/xosc.ipynb">jupyter/xosc.ipynb</a>.
     The notebook finds the peak by <code>np.argmax</code> on a 1000-point grid;
     this page uses the closed forms
     f_s = 1/(2&pi;&radic;(L&middot;C_F)) and f_p = f_s&middot;&radic;(1 + C_F/C_P)
@@ -186,7 +186,7 @@ Znum = func(1j*2*np.pi*f)</code></pre>
 </div>
 
 <footer>
-  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2026/">aic2026</a>
+  TFE4188 Advanced Integrated Circuits &middot; <a href="https://wulffern.github.io/aic2027/">aic2027</a>
 </footer>
 
 <script src="common/plot.js"></script>

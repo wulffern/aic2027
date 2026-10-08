@@ -8,7 +8,7 @@ the top of the Python.
 
 `make examples` copies this directory to `docs/assets/examples/`, which is
 published with the site. Lectures link to
-`https://wulffern.github.io/aic2026/assets/examples/<page>.html`, an absolute
+`https://wulffern.github.io/aic2027/assets/examples/<page>.html`, an absolute
 URL so the links also work from the PDF and the EPUB.
 
 ## Layout

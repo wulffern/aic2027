@@ -35,7 +35,7 @@ signals (discrete-value, discrete-time) back to analog signals (continuous
 value, continuous time).
 
 The SI base units define the fundamental analog quantities as second, meter, kilogram,
-ampere, kelvin, mole and candela (see [the refresher](/aic2026/a_refresher)). Assume that
+ampere, kelvin, mole and candela (see [the refresher](/aic2027/a_refresher)). Assume that
 electronic circuits interact with the real world in terms of second and ampere.
 
 Related to Ampere we have the derived units of charge (Ampere Seconds), Volt
