@@ -49,6 +49,7 @@ hard. We will follow the chain, and put a number on each link.
 
 # The noise floor
 
+<!--pan_doc:
 Noise is a phenomenon that occurs in all electronic circuits. It places a
 lower limit on the smallest signal we can use. Many now have super audio
 compact disc (SACD) players with 24bit converters, 24 bits is around
@@ -63,6 +64,15 @@ that $SNR = 6.02*Bits +
 DAC with 120dB SNR, that equals around $Bits = (120-1.76)/6.02 =
 19.64$. In other words, the last four bits of your SACD player is
 probably noise!
+-->
+
+<!--pan_skip: -->
+
+24 bits at 5 V full scale: $\frac{5 V}{2^{24}} \approx$ 298 nV, the noise of 50 Ω in 96 kHz
+
+$$ SNR = 6.02 \cdot B + 1.76 \text{ dB} = 146 \text{ dB at } B = 24 $$
+
+The best DAC of 2005: 120 dB, about 19.6 bits
 
 ---
 
@@ -93,15 +103,22 @@ describe any of them. Then we go looking for where they come from.
 
 # Statistics
 
+<!--pan_doc:
 The mean of a signal x(t) is defined as
+-->
 
 $$\overline{x(t)} = \lim_{T\to\infty} \frac{1}{T}\int^{+T/2}_{-T/2}{ x(t) dt} \tag{1}$$
+<!--pan_doc:
 The mean square of x(t) defined as
+-->
 
 $$\overline{x^2(t)} =\lim_{T\to\infty} \frac{1}{T}\int^{+T/2}_{-T/2}{ x^2(t) dt} \tag{2}$$
+<!--pan_doc:
 The variance of x(t) defined as
+-->
 
-$$\sigma^2 = \overline{x^2(t)} - \overline{x(t)}^2 \tag{3}$$ 
+$$\sigma^2 = \overline{x^2(t)} - \overline{x(t)}^2 \tag{3}$$
+<!--pan_doc:
 For a signal with
 a mean of zero the variance is equal to the mean square. The
 auto-correlation of x(t) is defined as
@@ -110,11 +127,17 @@ $$\begin{aligned}
   R_x(\tau ) &= \overline{x(t)x(t + \tau)} \\
 &= \: \lim_{T\to\infty} \frac{1}{T}\int^{+T/2}_{-T/2}{ x(t)x(t+\tau) dt}
 \end{aligned}$$
+-->
+
+<!--pan_skip: -->
+
+$$ R_x(\tau) = \overline{x(t)x(t + \tau)} $$
 
 ---
 
 # Average Power
 
+<!--pan_doc:
 Average power is defined for a continuous system by (4), and for
 discrete samples by (5). 
 
@@ -122,11 +145,13 @@ $P_{av}$ usually has the
 unit $A^2$ or $V^2$, so we have to multiply/divide by the impedance to
 get the power in Watts. To get Volts and Amperes we use the
 root-mean-square (RMS) value which is defined as $\sqrt{P_{av}}$.
+-->
 
 $$P_{av} = \lim_{T\to\infty} \frac{1}{T} \int^{+T/2}_{-T/2} x^2(t) dt \tag{4}$$
 
 $$P_{av} = \frac{1}{N}\sum_{i=0}^N x^2(i) \tag{5}$$
 
+<!--pan_doc:
 If x(t) has a mean of zero then, according to (3), $P_{av}$ is equal
 to the variance of x(t).
 
@@ -174,11 +199,13 @@ different sources and can be whatever.
 </div>
 
 </div>
+-->
 
 ---
 
 # Noise Spectrum
 
+<!--pan_doc:
 With random noise it is useful to relate the average power to frequency.
 We call this Power Spectral Density (PSD). A PSD plots how much power a
 signal carries at each frequency. In literature $S_x(f)$ is often used
@@ -190,8 +217,10 @@ $\frac{A}{\sqrt{Hz}}$ for current.
 
 The power spectral density is defined as two times the Fourier transform
 of the auto-correlation function [@ziel]
+-->
 
 $$S_x(f) = 2\int_{-\infty}^{\infty}{R_x(\tau)e^{-j2\pi f \tau}d\tau} \tag{6}$$
+<!--pan_doc:
 This can also be written as
 
 $$\begin{aligned}
@@ -214,16 +243,22 @@ The inverse of power spectral density is defined as
 $$R_x(\tau)  = \frac{1}{2}\int_{-\infty}^{\infty}{S_x(f)e^{j 2 \pi f \tau} df} = \int_{0}^{\infty}{S_x(f) \cos(\omega \tau)df}$$
 
 If we set $\tau=0$ we get
+-->
 
-$$\overline{x^2(t)} = \int_{0}^{\infty}{S_x(f)df} \tag{7}$$ which means we can
+$$\overline{x^2(t)} = \int_{0}^{\infty}{S_x(f)df} \tag{7}$$
+<!--pan_doc:
+which means we can
 easily calculate the average power if we know the power spectral
 density. As we will see later it is common to express noise sources in
 PSD form.
 
 Another very useful theorem when working with noise in the frequency
 domain is this
+-->
 
-$$S_y(f) = S_x(f)\vert H(f)\vert ^2 \tag{8}$$ , where $S_y(f)$ is the output power
+$$S_y(f) = S_x(f)\vert H(f)\vert ^2 \tag{8}$$
+<!--pan_doc:
+, where $S_y(f)$ is the output power
 spectral density, $S_x(f)$ is the input power spectral density and
 $H(f)$ is the transfer function of a time-invariant linear system.
 
@@ -232,8 +267,11 @@ If we insert (8) into (7), with $S_x(f) = a\:constant = D_v$ we get
 $$\overline{x^2(t)} = \int{S_y(f)df} = D_v\int{\vert H(f)\vert ^2 df} = D_v f_x$$
 , where $f_x$ is what we call the noise bandwidth. For a single time
 constant RC network the noise bandwidth is equal to
+-->
 
-$$f_x = \frac{\pi f_0}{2} = \frac{1}{4 R C}$$ where $f_x$ is the noise
+$$f_x = \frac{\pi f_0}{2} = \frac{1}{4 R C}$$
+<!--pan_doc:
+where $f_x$ is the noise
 bandwidth and $f_0$ is the 3dB frequency.
 
 We haven’t told you this yet, but thermal noise is white and white means
@@ -243,6 +281,7 @@ pass filter, then (8) tells us that the output spectral density will
 be shaped by $H(f)$. At frequencies above the
 $f_x$ in $H(f)$ we expect the root power spectral density to fall by
 20dB per decade.
+-->
 
 ---
 
@@ -256,6 +295,7 @@ a normal distribution curve as $n$ increases.*
 
 </div>
 
+<!--pan_doc:
 This is a neat theorem, it explains why many noise sources we encounter
 in the real world are Gaussian.[^1] Take thermal noise for example, it is
 generated by random motion of carriers in materials. If we look at a
@@ -263,11 +303,13 @@ single electron moving through the material the probability distribution
 might not be Gaussian. But summing probability distribution of the
 random movements with a large number of electrons will give us a Gaussian
 distribution, thus thermal noise is Gaussian.
+-->
 
 ---
 
 # PSD of a white noise source
 
+<!--pan_doc:
 If we have a true random process with Gaussian distribution we know that
 the autocorrelation function only has a value for $\tau=0$. From the
 definition of auto-correlation we have that
@@ -291,14 +333,23 @@ $$\begin{aligned}
 
 , since
 
-$$\int{\delta(\tau)e^{-j 2 \pi f \tau} d\tau} = e^0 = 1$$ This means
+$$\int{\delta(\tau)e^{-j 2 \pi f \tau} d\tau} = e^0 = 1$$
+This means
 that the power spectral density of a white noise source is flat, or in
 other words, the same for all frequencies.
+-->
+
+<!--pan_skip: -->
+
+$$ R_x(\tau) = \overline{x^2(t)}\,\delta(\tau) \quad\Rightarrow\quad S_x(f) = 2\,\overline{x^2(t)} $$
+
+White: the same power density at every frequency
 
 ---
 
 # Summing noise sources
 
+<!--pan_doc:
 Summing noise sources is usually trivial, but we need to know why and
 when it is not. If we write the time dependant noise signals as
 
@@ -317,16 +368,22 @@ $$\begin{aligned}
 If $\overline{e_{1}^2}$ and $\overline{e_{2}^2}$ are uncorrelated noise
 sources we can skip the last term in
 the sum above and just write
+-->
 
-$$\overline{e_{tot}^2} = \overline{e_{1}^2} + \overline{e_{2}^2}$$ Most
+$$\overline{e_{tot}^2} = \overline{e_{1}^2} + \overline{e_{2}^2}$$
+<!--pan_doc:
+Most
 natural noise sources are uncorrelated.
+-->
 
 ---
 
 # Signal to Noise Ratios
 
+<!--pan_doc:
 Signal to Noise Ratio (SNR) is a common method to specify the relation
 between signal power and noise power in linear systems. It is defined as
+-->
 
 $$\begin{aligned}
   SNR &= 10 \log\left(\frac{Signal\:power}{Noise\:power}\right)\\
@@ -334,6 +391,7 @@ $$\begin{aligned}
   &=  20 \log\left(\frac{v_{rms}}{\sqrt{\overline{e_{n}^2}}}\right)
 \end{aligned}$$
 
+<!--pan_doc:
 Another useful ratio is Signal to Noise and Distortion (SNDR), since
 most real systems exhibit non-linearities it is useful to include
 distortion in the ratio. One can calculate SNR and SNDR in many ways. If
@@ -344,38 +402,49 @@ calculated as
 
 $$SNR = 10
   \log\left(\frac{Signal\:power}{Noise\:power\:-\:6
-\:first\:harmonics}\right)$$ 
+\:first\:harmonics}\right)$$
 
 And SNDR is calculated as
 
 $$SNDR = 10\log\left(\frac{Signal\:power}{Noise\:  power}\right)$$
+-->
 
 ---
 
 # Noise figure and Friis formula
 
+<!--pan_doc:
 Noise factor is a measure on the noise performance of a system. It is
 defined as
+-->
 
 $$F =
   \frac{\overline{v_o^2}}{source\:contribution\:to\:\overline{v_o^2}}$$
+<!--pan_doc:
 where $\overline{v_o^2}$ 
 
 is the total output noise. The noise figure is defined as (noise factor in dB)
+-->
 
-$$NF = 10 \log(F)$$ The noise factor can also be defined as
+$$NF = 10 \log(F)$$
+<!--pan_doc:
+The noise factor can also be defined as
+-->
 
 $$F = \frac{SNR_{input}}{SNR_{output}}$$
 
+<!--pan_doc:
 This brings us right into what is known as Friis formula. The noise factor
 definition is only correct at room temperature, for more details, see [@friis].
 If we have a
 multistage system, for example several amplifiers in cascade, the total
 noise figure of the system is defined as
+-->
 
 $$F = 1 + F_1 - 1 + \frac{F_2 -1}{G_{1}} +
-  \frac{F_3-1}{G_{1}G_{2}} + ....$$ 
+  \frac{F_3-1}{G_{1}G_{2}} + ....$$
   
+<!--pan_doc:
 Here $F_i$ is the noise figures of
 the individual stages and $G_i$ is the available gain of each stage.
 This can be rewritten as
@@ -389,48 +458,69 @@ is important to amplify the noise as early as possible!
 [^1]: Gaussian distribution = normal distribution. Gaussian describes
     the amplitude distribution; white describes a flat spectral density.
     Thermal noise happens to be both.
+-->
 
 ---
 
 # Spectral Density 
 
+<!--pan_doc:
 Warning: This is not an introduction to spectral density. If the subject
 is completely unfamiliar I’d advise reading another source. For example
 chapter 4 in [@johns] or chapter 7 in
 [@razavi].
+-->
+
+<!--pan_skip: -->
+
+- Two definitions in the literature, a factor of two apart
+- Both: spectral density is the Fourier transform of the auto-correlation
 
 ---
 
 ## Definition of Spectral Density
 
+<!--pan_doc:
 There are two different definitions of spectral density used in the
 literature. They differ by a factor of two. The one used in signal
 processing books, like [@gray.r.m], is
+-->
 
 $$S_{x1}(f) = \int_{-\infty}^{\infty}{R_{x1}(\tau)e^{-j\omega\tau}d\tau}$$
+<!--pan_doc:
 And the one often used in books about noise, like [@ziel],
 is
+-->
 
 $$S_{x2}(f) = 2\int_{-\infty}^{\infty}{R_{x2}(\tau)e^{-j\omega\tau}d\tau}$$
+<!--pan_doc:
 In both cases $R_{xi}(\tau)$ is the auto-correlation function defined as
 
-$$R_{xi}(\tau) = \overline{x_i(t)x_i(t+\tau)}$$ As we can plainly see
+$$R_{xi}(\tau) = \overline{x_i(t)x_i(t+\tau)}$$
+As we can plainly see
 
-$$S_{x1}(f) \neq S_{x2}(f)$$ , there is no way these two can be made
+$$S_{x1}(f) \neq S_{x2}(f)$$
+, there is no way these two can be made
 equal if
 
-$$R_{x1}(\tau) = R_{x2}(\tau)$$ This is ok, there is
+$$R_{x1}(\tau) = R_{x2}(\tau)$$
+This is ok, there is
 no problem having two different definitions for two different functions.
 In reality $S_{x1}(f)$ and $S_{x2}(f)$ are different functions of
 frequency, and we could say that
+-->
 
-$$S_{x2}(f) = 2S_{x1}(f)$$ if the two auto-correlation functions are
+$$S_{x2}(f) = 2S_{x1}(f)$$
+<!--pan_doc:
+if the two auto-correlation functions are
 equal.
+-->
 
 ---
 
 ## Sources of Confusion
 
+<!--pan_doc:
 The problem with spectral density arises when reading literature from
 different communities, for example [@gray.r.m] and
 [@ziel] where $S_x(f)$ is used for both $S_{x1}(f)$ and
@@ -457,7 +547,8 @@ Before we proceed lets get rid of the $e$’s. We know that $e^{j\alpha} =
 \cos \alpha + j \sin \alpha$. So we could rewrite $S_{x1}$ as
 
 $$S_{x1}(f) = \int_{-\infty}^{\infty}{R_{x1}(\tau)[\cos(\omega \tau) + j \sin( \omega
-  \tau)]d\tau}$$ and it turns out that since $R_{x1}(\tau)$ is an even
+  \tau)]d\tau}$$
+and it turns out that since $R_{x1}(\tau)$ is an even
 function we can drop the $j\sin{\omega \tau}$ term. $S_{x1}(f)$ is also
 an even function since the Fourier Transform of an even function is
 even.
@@ -480,52 +571,78 @@ We can rewrite $R_{x2}(\tau)$ as
 
 $$R_{x2}(\tau) = \overline{x_2(t)x_2(t + \tau)} = \int_0^{\infty}{S_{x2}(f)\cos(\omega\tau)df}$$
 and if $\tau = 0$
+-->
 
-$$\overline{x_2^2(t)} = \int_0^{\infty}{S_{x2}(f)df}$$ So using the
+$$\overline{x_2^2(t)} = \int_0^{\infty}{S_{x2}(f)df}$$
+<!--pan_doc:
+So using the
 $S_{x2}$ definition we see that average power (mean square value of
 $x_2(t)$) is equal to the integral from 0 to infinity of the spectral
 density. If we use $S_{x1}$ instead, average power would be
+-->
 
-$$\overline{x_1^2(t)} = 2\int_0^{\infty}{S_{x1}(f)df}$$ But if
+$$\overline{x_1^2(t)} = 2\int_0^{\infty}{S_{x1}(f)df}$$
+<!--pan_doc:
+But if
 $R_{x1}(\tau) = R_{x2}(\tau)$ then
 
-$$\overline{x_2^2(t)} = \overline{x_1^2(t)}$$ even though
+$$\overline{x_2^2(t)} = \overline{x_1^2(t)}$$
+even though
 $S_{x1}(f) \neq S_{x2}(f)$.
 
 $S_{x1}$ is called the two-sided spectral density, and $S_{x2}$ the
 one-sided spectral density.
+-->
+
+<!--pan_skip: -->
+
+$S_{x1}$: two-sided, signal processing books. $S_{x2}$: one-sided, noise books
 
 ---
 
 ## Example: Thermal Noise
 
+<!--pan_doc:
 The spectral density of thermal noise in electronic circuit should be
 known to anyone that has studied analog electronics. We normally define
 the voltage spectral density of thermal noise as
+-->
 
-$$S_{th}(f) = 4kTR$$ where k is Boltzmann’s constant, T the temperature in
+$$S_{th}(f) = 4kTR$$
+<!--pan_doc:
+where k is Boltzmann’s constant, T the temperature in
 Kelvin and R the resistance. But that is the spectral density in the
 one-sided $S_{x2}$ definition. If we were to use the two-sided
 $S_{x1}$ definition, then the spectral density of thermal noise would
 be
+-->
 
-$$S_{th}(f) = 2kTR$$ Both these spectral densities would give the same
+$$S_{th}(f) = 2kTR$$
+<!--pan_doc:
+Both these spectral densities would give the same
 average power value if we use the inverse Fourier Transform of the
 matching definition.[^2]
+-->
 
 ---
 
 ## Einstein: The source
 
+<!--pan_doc:
 In his 1914 paper [@einstein14] Albert Einstein described,
 supposedly for the first time, the auto-correlation function and what we
 have come to know as the spectral density. He defined the
 auto-correlation function as
+-->
 
-$$\mathfrak{M} (\Delta) = \overline{F(t)F(t + \Delta)}$$ and the
+$$\mathfrak{M} (\Delta) = \overline{F(t)F(t + \Delta)}$$
+<!--pan_doc:
+and the
 intensity (spectral density) as
+-->
 
 $$I(\theta) =  \int_0^{T}{\mathfrak{M}(\Delta) \cos ( \pi \frac{\Delta}{\theta})d\Delta}$$
+<!--pan_doc:
 ,where the period $\theta = T/n$ and $T$ is a very large value. The
 paper is very short, only 1 page, but it is worth reading. Note that
 the spectral density as the Fourier Transform of the auto-correlation
@@ -534,6 +651,7 @@ function is often referred to as the *Wiener-Khintchine* theorem.
 [^2]: Note that if you calculate the average power of $S_{th}(f)$ you’ll
     get infinity. You have to include the bandwidth of the circuit you
     are considering for average power to have a finite value.
+-->
 
 ---
 
