@@ -410,8 +410,8 @@ def fetch_jnwtt_trap(src):
     way, with the opposite sign: a fractional supply step moves GR07's
     frequency by minus the step in GR06's width. The 2026-08-04 dual run
     sampled both on one loop, so ask what GR07 does while GR06 is in
-    each state. The 2026-10-08 burst is 26 minutes of GR06 alone, long
-    enough for the dwell time statistics.
+    each state. The 2026-10-08 burst is two hours of GR06 alone, for the
+    dwell times, the spectrum and the amplitude distribution of one trap.
     """
     import json
 
@@ -420,9 +420,15 @@ def fetch_jnwtt_trap(src):
 
     n = 0
 
-    #- 26 minutes of GR06, 10 ms bins: the dwell times
+    #- The burst, 10 ms bins. jnwtt_trap_dwell.csv was reduced from the
+    #- first half hour while the recording was still running; the file
+    #- has since grown to two hours, and its percentile filter reaches
+    #- past the old end, so that cut cannot be redone exactly. It stays
+    #- as committed. The full record goes to jnwtt_trap_long_*.csv.
     burst = os.path.join(src, "jnwtemp-GR06-burst-20261008-085042.csv")
     if os.path.isfile(burst):
+        from scipy.signal import welch
+
         d = np.genfromtxt(burst, delimiter=",", names=True)
         temp = d["temp_c"]
         dt = float(np.median(np.diff(d["t_rel_s"])))
@@ -431,16 +437,60 @@ def fetch_jnwtt_trap(src):
         x = temp - percentile_filter(temp, 70, size=3001, mode="nearest")
         s = np.convolve(x, np.ones(10) / 10, "same")
         st = _two_state(s, -0.42, -0.2)
-        step = x[st == 1].mean() - x[st == 0].mean()
-        with open(os.path.join(DATA, "jnwtt_trap_dwell.csv"), "w",
+        dw = _dwells(st, dt)
+        lev = (x[st == 0].mean(), x[st == 1].mean())
+        res = x - np.where(st == 1, lev[1], lev[0])
+        with open(os.path.join(DATA, "jnwtt_trap_long_dwell.csv"), "w",
                   newline="") as fo:
             w = csv.writer(fo)
             w.writerow(["state", "dwell_s"])
-            for k, v in _dwells(st, dt):
+            for k, v in dw:
                 w.writerow([int(k), f"{v:.4g}"])
-        print(f"  jnwtt_trap_dwell.csv (step {step * 1e3:.0f} mK, "
-              f"{np.median(temp):.1f} C)")
-        n += 1
+        #- the spectrum of the reading itself, not of the detected
+        #- states: only a straight line is taken out of each segment, so
+        #- the slow temperature drift shows below a few mHz
+        f, p = welch(temp - temp.mean(), fs=1 / dt, nperseg=2**17,
+                     detrend="linear")
+        edges = np.logspace(np.log10(f[1]), np.log10(f[-1]), 61)
+        with open(os.path.join(DATA, "jnwtt_trap_long_psd.csv"), "w",
+                  newline="") as fo:
+            w = csv.writer(fo)
+            w.writerow(["f_hz", "psd_k2_hz"])
+            for lo, hi in zip(edges[:-1], edges[1:]):
+                m = (f >= lo) & (f < hi)
+                if m.any():
+                    w.writerow([f"{np.sqrt(lo * hi):.4g}",
+                                f"{p[m].mean():.4g}"])
+        #- the amplitude distribution, against the slow baseline. The
+        #- reading comes in steps of one counter tick, about 15 mK, and
+        #- the baseline is itself a reading, so x sits on that grid: bins
+        #- three ticks wide with edges between grid points, or the
+        #- histogram combs
+        q = float(np.median(np.diff(np.unique(np.round(temp, 6)))))
+        be = (np.arange(np.floor(-1.4 / q / 3), np.ceil(0.8 / q / 3) + 1)
+              * 3 + 0.5) * q
+        counts, be = np.histogram(x, bins=be)
+        with open(os.path.join(DATA, "jnwtt_trap_long_hist.csv"), "w",
+                  newline="") as fo:
+            w = csv.writer(fo)
+            w.writerow(["x_k", "density_per_k"])
+            for c, lo, hi in zip(counts, be[:-1], be[1:]):
+                w.writerow([f"{(lo + hi) / 2:.4g}",
+                            f"{c / (x.size * (hi - lo)):.4g}"])
+        means = [np.mean([v for k, v in dw if k == j]) for j in (0, 1)]
+        with open(os.path.join(DATA, "jnwtt_trap_long_stats.csv"), "w",
+                  newline="") as fo:
+            w = csv.writer(fo)
+            w.writerow(["record_s", "dt_s", "temp_c", "level0_k", "level1_k",
+                        "resid_rms_k", "mean0_s", "mean1_s", "n0", "n1"])
+            w.writerow([f"{d['t_rel_s'][-1]:.0f}", f"{dt:.4g}",
+                        f"{np.median(temp):.2f}", f"{lev[0]:.4g}",
+                        f"{lev[1]:.4g}", f"{res.std():.4g}",
+                        f"{means[0]:.4g}", f"{means[1]:.4g}",
+                        sum(k == 0 for k, _ in dw), sum(k == 1 for k, _ in dw)])
+        print(f"  jnwtt_trap_long_*.csv ({d['t_rel_s'][-1] / 60:.0f} min, "
+              f"step {(lev[1] - lev[0]) * 1e3:.0f} mK, {len(dw)} dwells)")
+        n += 4
 
     #- GR06 and GR07 at the same time: the supply test
     meta_path = os.path.join(src, "corr-dual-20260804-232543.meta.json")
