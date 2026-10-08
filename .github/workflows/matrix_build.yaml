@@ -112,6 +112,8 @@ jobs:
             docs/assets/media
             docs/assets/html
             docs/assets/examples
+            media/*_tikz.*
+            media/*/*_tikz.*
             docs/downloads.md
             docs/plan.md
             docs/syllabus.md
@@ -281,11 +283,53 @@ jobs:
           path: artifact/docs/assets
           if-no-files-found: error
 
+  # Marp decks of the Makefile's lectures: a PDF per lecture and an HTML
+  # deck to present from. No TeX needed - the TikZ figures came in the
+  # prepared sources - but marp-cli needs Node and Chrome, which the
+  # plain runner has and the TeX image does not.
+  marp:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Download prepared sources
+        uses: actions/download-artifact@v8
+        with:
+          name: prepared-sources
+          path: .
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install marp-cli
+        run: |
+          npm install -g @marp-team/marp-cli@4.5.1
+          pip install click
+          sudo apt-get install -y --no-install-recommends poppler-utils
+          # Ubuntu 24.04 blocks the user namespaces Chrome's sandbox needs
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Build Marp decks
+        run: make marp
+
+      - name: Upload Marp decks
+        uses: actions/upload-artifact@v7
+        with:
+          name: marp
+          path: docs/assets/marp
+
   jekyll_preview:
     needs:
       - prepare
       - standalone
       - book
+      - marp
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -311,6 +355,12 @@ jobs:
         with:
           name: book
           path: docs/assets
+
+      - name: Download Marp decks
+        uses: actions/download-artifact@v8
+        with:
+          name: marp
+          path: docs/assets/marp
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

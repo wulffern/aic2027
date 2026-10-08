@@ -10,7 +10,7 @@ ifneq ($(wildcard /pyenv/bin/.*),)
 	PYTHON=/pyenv/bin/python3
 endif
 
-.PHONY:  plots plots-one plots-data slides slides-one slides-parallel version tikz tikz-one tikz-check tikz-preview preview print-tikz figures prepare-docs standalone-one standalone-list book-pdf book-epub print-files examples check texts texts-parallel llms
+.PHONY:  plots plots-one plots-data slides slides-one slides-parallel marp marp-one version tikz tikz-one tikz-check tikz-preview preview print-tikz figures prepare-docs standalone-one standalone-list book-pdf book-epub print-files examples check texts texts-parallel llms
 
 #	lr0_logic \
 
@@ -400,6 +400,19 @@ slides-parallel: slides-vendor
 slides-one: slides-vendor
 	@test -n "${FNAME}" || (echo "Usage: make slides-one FNAME=l05_sc"; exit 1)
 	${PYTHON} py/slides.py lectures/${FNAME}.md
+
+# Marp decks of the same lectures: a PDF to hand out and an HTML deck to
+# present from (p opens the presenter view with notes, f is fullscreen).
+# Only the Makefile's own list is built. Needs marp-cli and Chrome;
+# MARP=... picks another marp binary.
+MARPDIR = docs/assets/marp
+
+marp:
+	${PYTHON} py/marp.py --site ${MARPDIR} ${foreach f, ${SLIDEFILES}, lectures/${f}.md}
+
+marp-one:
+	@test -n "${FNAME}" || (echo "Usage: make marp-one FNAME=l05_sc"; exit 1)
+	${PYTHON} py/marp.py --pdf --html lectures/${FNAME}.md
 
 
 print-tikz:

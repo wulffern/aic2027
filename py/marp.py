@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Render a Deckset lecture as a Marp deck.
 
-Prototype. The lectures stay Deckset source; this writes a Marp copy to
+The lectures stay Deckset source; this writes a Marp copy to
 .build/marp/<name>.md and, with --html or --pdf, runs marp-cli on it.
+With --site DIR it renders every deck given into DIR in one marp-cli run,
+PDF and HTML, and copies the figures the HTML decks load to DIR/media.
 
     python3 py/marp.py lectures/lr1_transistor_noise.md --html --pdf
+    make marp        # the Makefile's lectures into docs/assets/marp
 
 What changes on the way:
 
@@ -25,6 +28,7 @@ The look is slides/marp/aic.css.
 
 import os
 import re
+import shutil
 import subprocess
 import sys
 
@@ -40,6 +44,7 @@ IMG_RE = re.compile(r"!\[([^\]]*)\]\(([^)\s]+)\)")
 PAN_RE = re.compile(r"<!--\s*pan_([a-z]+)\s*:(.*)$")
 FIT_RE = re.compile(r"^(#+)\s*\[fit\]\s*(.*)$")
 BG_RE = re.compile(r"^\[\.background-color:\s*([^\]]+)\]\s*$")
+TEXT_RE = re.compile(r"^\[\.text:\s*(#[0-9A-Fa-f]{3,8})[^\]]*\]\s*$")
 DIRECTIVE_RE = re.compile(r"^\[\.[a-z-]+[^\]]*\]\s*$")
 
 
@@ -100,6 +105,49 @@ def strip_pan(lines):
     return out
 
 
+INLINE_MATH_RE = re.compile(r"\$\$(.+?)\$\$")
+
+
+def fix_math(lines):
+    """Deckset writes all maths as $$...$$ and decides by context: next to
+    text it is inline, on its own it is a display block. Marp wants $...$
+    inline, and a display block whose $$ fences start their own lines.
+    Speaker notes and code fences are left alone."""
+    out, display, fence, note = [], False, False, False
+    for line in lines:
+        s = line.strip()
+        if note or fence or (not display and s.startswith("<!--")):
+            if s.startswith("```"):
+                fence = not fence
+            elif s.startswith("<!--") and not fence:
+                note = "-->" not in s
+            elif note and "-->" in s:
+                note = False
+            out.append(line)
+            continue
+        if s.startswith("```"):
+            fence = True
+            out.append(line)
+            continue
+        if not display:
+            whole = INLINE_MATH_RE.fullmatch(s)
+            if not whole:
+                line = INLINE_MATH_RE.sub(
+                    lambda m: "$" + m.group(1).strip() + "$", line)
+        if line.count("$$") % 2 == 0:
+            out.append(line)
+            continue
+        # a lone fence: give it a line of its own
+        pre, post = line.split("$$", 1)
+        if pre.strip():
+            out += [pre.rstrip(), ""] if not display else [pre.rstrip()]
+        out.append("$$")
+        display = not display
+        if post.strip():
+            out += [post.strip()] if display else ["", post.strip()]
+    return out
+
+
 def slides_of(lines):
     cur, out = [], []
     for line in lines:
@@ -145,7 +193,7 @@ def convert_slide(lines, src_dir, first=False, meta={}):
         path = svg_for(m.group(2), src_dir)
         side = next((o for o in opts if o in ("left", "right")), None)
         size = next((o for o in opts if o.endswith("%")), None)
-        if side:
+        if side and has_text:
             return f"![bg {side} {size or 'contain'}]({path})"
         if "inline" in opts or has_text:
             return f"![]({path})"
@@ -166,6 +214,10 @@ def convert_slide(lines, src_dir, first=False, meta={}):
         m = BG_RE.match(s)
         if m:
             head.append(f"<!-- _backgroundColor: {m.group(1).strip()} -->")
+            continue
+        m = TEXT_RE.match(s)
+        if m:
+            head.append(f"<!-- _color: {m.group(1)} -->")
             continue
         if s == "[.column]":
             cols.append(len(body))
@@ -198,7 +250,7 @@ def convert(src):
     src_dir = os.path.dirname(os.path.abspath(src))
     lines = open(src).read().split("\n")
     meta, lines = split_header(lines)
-    lines = strip_pan(lines)
+    lines = fix_math(strip_pan(lines))
     slides = [convert_slide(s, src_dir, i == 0, meta)
               for i, s in enumerate(slides_of(lines))]
     front = ["---", "marp: true", "theme: aic", "paginate: true",
@@ -210,29 +262,68 @@ def convert(src):
     return "\n".join(front) + "\n\n" + "\n---\n\n".join(slides)
 
 
+MEDIA_RE = re.compile(r"\]\(\.\./\.\./media/([^)\s]+)\)")
+
+
+def marp(theme, fmt, src, out, many=False):
+    """Run marp-cli on one deck, or with many=True on every deck in the
+    directory src - one run, so Chrome starts once, not per deck."""
+    cmd = [os.environ.get("MARP", "marp"), "--theme", theme, "--html",
+           "--allow-local-files", f"--{fmt}"]
+    if fmt == "pdf":
+        cmd.append("--pdf-notes")
+    cmd += ["-I", src, "-o", out] if many else [src, "-o", out]
+    subprocess.run(cmd, check=True, stdin=subprocess.DEVNULL)
+
+
 @click.command()
-@click.argument("src")
+@click.argument("srcs", nargs=-1, required=True)
 @click.option("--html", is_flag=True, help="render HTML with marp-cli")
 @click.option("--pdf", is_flag=True, help="render PDF with marp-cli")
-def main(src, html, pdf):
-    os.makedirs(OUT, exist_ok=True)
-    name = os.path.splitext(os.path.basename(src))[0]
-    md = os.path.join(OUT, name + ".md")
-    # paths in the lecture are relative to lectures/; .build/marp is one
-    # level deeper, so ../media becomes ../../media
-    text = convert(src).replace("](../", "](../../")
-    open(md, "w").write(text)
-    print(f"marp: wrote {os.path.relpath(md, ROOT)}")
-    for flag, ext in ((html, "html"), (pdf, "pdf")):
-        if not flag:
-            continue
-        out = os.path.join(OUT, f"{name}.{ext}")
-        cmd = ["marp", "--theme", THEME, "--html", "--allow-local-files",
-               f"--{ext}", md, "-o", out]
-        if ext == "pdf":
-            cmd.insert(1, "--pdf-notes")
-        subprocess.run(cmd, check=True)
-        print(f"marp: wrote {os.path.relpath(out, ROOT)}")
+@click.option("--site", metavar="DIR",
+              help="render PDF and HTML into DIR, with the figures the "
+                   "HTML decks use copied to DIR/media")
+def main(srcs, html, pdf, site):
+    # a site build gets a clean directory of its own, at the same depth
+    # as OUT, so marp-cli's --input-dir sees exactly these decks
+    out_md = OUT + "-site" if site else OUT
+    if site:
+        shutil.rmtree(out_md, ignore_errors=True)
+    os.makedirs(out_md, exist_ok=True)
+    mds = []
+    for src in srcs:
+        name = os.path.splitext(os.path.basename(src))[0]
+        md = os.path.join(out_md, name + ".md")
+        # paths in the lecture are relative to lectures/; .build/marp is
+        # one level deeper, so ../media becomes ../../media
+        text = convert(src).replace("](../", "](../../")
+        open(md, "w").write(text)
+        mds.append(md)
+        print(f"marp: wrote {os.path.relpath(md, ROOT)}")
+    if site:
+        os.makedirs(site, exist_ok=True)
+        marp(THEME, "pdf", out_md, site, many=True)
+        marp(THEME, "html", out_md, site, many=True)
+        # an HTML deck loads its figures at view time, so they go along
+        used = set()
+        for md in mds:
+            used.update(MEDIA_RE.findall(open(md).read()))
+        for rel in sorted(used):
+            src = os.path.join(ROOT, "media", rel)
+            if os.path.isfile(src):
+                dst = os.path.join(site, "media", rel)
+                os.makedirs(os.path.dirname(dst), exist_ok=True)
+                shutil.copyfile(src, dst)
+        for md in mds:
+            out = os.path.join(site, os.path.basename(md)[:-3] + ".html")
+            text = open(out).read().replace("../../media/", "media/")
+            open(out, "w").write(text)
+        print(f"marp: {len(mds)} decks and {len(used)} figures in {site}")
+        return
+    for flag, fmt in ((html, "html"), (pdf, "pdf")):
+        if flag:
+            for md in mds:
+                marp(THEME, fmt, md, md[:-3] + "." + fmt)
 
 
 if __name__ == "__main__":
