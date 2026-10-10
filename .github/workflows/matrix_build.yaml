@@ -311,6 +311,10 @@ jobs:
         run: |
           npm install -g @marp-team/marp-cli@4.5.1
           pip install click
+          # The runner image's package index goes stale between image
+          # releases; without an update apt asks the mirror for a poppler
+          # version that has been superseded and gets a 404.
+          sudo apt-get update
           sudo apt-get install -y --no-install-recommends poppler-utils
           # Ubuntu 24.04 blocks the user namespaces Chrome's sandbox needs
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
