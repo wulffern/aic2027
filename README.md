@@ -13,9 +13,22 @@ Two licenses, by scope.
 - **Code** — `py/`, `ex/`, `slides/`, `docker/`, and the makefiles — is
   licensed MIT. See `LICENSE-CODE`.
 
-A few third-party figures keep their own licenses (CC BY 3.0, CC BY 4.0 and
-CC BY-SA 2.5/3.0/4.0). Each is credited in its figure caption, and those
-terms govern that figure rather than the CC BY 4.0 above.
+Figures that are not Carsten's are credited in their captions, and the terms
+given there govern that figure rather than the CC BY 4.0 above:
+
+- **Openly licensed**: CC BY 3.0, CC BY 4.0, CC BY-SA 2.5/3.0/4.0, CC0, Apache
+  2.0, and public domain (US federal works, Wikimedia Commons). Reuse them on
+  their own terms.
+- **Reprinted from IEEE papers**: figures from Wulff and Ytterdal, JSSC 2017,
+  and Garvik et al., A-SSCC 2019, captioned "© IEEE. Reprinted, with
+  permission". IEEE holds the copyright. They are not covered by CC BY 4.0;
+  ask IEEE before reusing them.
+- **Quoted with credit**: screenshots of tools and web pages, and the SkyWater
+  metal stack from the Google Open Source Blog. They belong to their owners
+  and are not covered by CC BY 4.0.
+
+Figures marked "Redrawn from" are new drawings and fall under CC BY 4.0; the
+caption credits the source of the idea.
 
 ## New year
 

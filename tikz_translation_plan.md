@@ -141,7 +141,7 @@ Process lectures in this order unless reprioritized later.
   - `l6_sd_d1_b1`
   - `l6_sdlog_d1_b5`
   - `l06_osd21`
-  - `l6_fredrik_arch`
+  - `l6_fredrik_arch` (done: `l06_leapfrog`)
 
 - `l07_vreg`
   - `l9_ldo_pmos`
@@ -245,8 +245,9 @@ screenshots and figures cited from papers, which is what the rest of the
 energy and radio chapters consist of.
 
 **Still open, low value.** System/project overview drawings in
-`l01_project`; `l10_lpradio` keeps three schematics from other sources
-(`fig_sar_logic`, `l06_fig_toplevel`, `pll_master_arch_28feb2020`).
+`l01_project`; `l10_lpradio` keeps two schematics reprinted from the JSSC paper
+(`fig_sar_logic`, `l06_fig_toplevel`); `pll_master_arch_28feb2020` is
+redrawn as `l10_adpll_bbpd`.
 Two figures have no source at all and would need re-simulating:
 `l5_velocity` and `cpumax`.
 

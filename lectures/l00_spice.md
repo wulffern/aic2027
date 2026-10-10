@@ -126,7 +126,7 @@ The expensive tools have built graphical user interface around the SPICE simulat
 ![right fit](../media/assembler.png)
 
 <!--pan_doc:
-<sub>Figure 2: Cadence Virtuoso ADE Assembler, showing the corner definitions on the left and a pass/fail table of simulated specifications on the right</sub>
+<sub>Figure 2: Cadence Virtuoso ADE Assembler, showing the corner definitions on the left and a pass/fail table of simulated specifications on the right. Screenshot of Cadence Virtuoso</sub>
 -->
 
 

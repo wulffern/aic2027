@@ -1,0 +1,53 @@
+\input{tikz/fig_header.tex}
+
+% The nRF5340 as a block diagram, simplified from the product
+% specification. The application core (Arm Cortex-M33 at 128 MHz, 1 MB
+% flash, 512 kB RAM) and the network core (Cortex-M33 at 64 MHz, 256 kB
+% flash, 64 kB RAM) each carry a grid of peripherals, and the two cores
+% talk through IPC. The point of the figure is the size of the RADIO
+% box, drawn in red: the entire 2.4 GHz transceiver, the subject of the
+% whole chapter, is one block among some fifty. Bus bridges and the
+% debug subsystem of the original are left out. Redrawn so the book does
+% not carry the datasheet figure.
+
+\begin{tikzpicture}[thick, font=\footnotesize]
+
+  \tikzset{per/.style={draw, fill=white, minimum width=1.4cm,
+                       minimum height=0.36cm, inner sep=1pt},
+           mem/.style={draw, minimum height=0.9cm, align=center}}
+
+  % application core
+  \draw (0,0) rectangle (5.0,8.6);
+  \node[anchor=north west, font=\small] at (0.1,8.5) {Application core};
+  \node[mem, minimum width=2.6cm] at (1.6,7.3) {Arm Cortex-M33\\128 MHz};
+  \node[mem, minimum width=1.3cm] at (4.0,7.3) {RAM\\512 kB};
+  \node[mem, minimum width=1.3cm] at (4.0,6.1) {Flash\\1 MB};
+  \foreach \n [count=\i from 0] in {KMU, NVMC, SPIM, SPIS, TWIM, TWIS,
+      UARTE, GPIOTE, DPPIC, WDT, COMP, LPCOMP, EGU, QSPI, GPIO, SPU,
+      CTRL-AP, CLOCK, POWER, RESET, PWM, PDM, I2S, IPC, NFCT, MUTEX,
+      TIMER, RTC, VMC, USBD, CryptoCell} {
+    \pgfmathtruncatemacro{\c}{int(\i/11)}
+    \pgfmathtruncatemacro{\r}{mod(\i,11)}
+    \node[per] (a\i) at (1.0+1.5*\c, 5.0-0.45*\r) {\n};
+  }
+
+  % network core
+  \draw (5.4,0) rectangle (10.4,8.6);
+  \node[anchor=north west, font=\small] at (5.5,8.5) {Network core};
+  \node[mem, minimum width=2.6cm] at (7.0,7.3) {Arm Cortex-M33\\64 MHz};
+  \node[mem, minimum width=1.3cm] at (9.4,7.3) {RAM\\64 kB};
+  \node[mem, minimum width=1.3cm] at (9.4,6.1) {Flash\\256 kB};
+  \foreach \n [count=\i from 0] in {ACL, IPC, NVMC, SPIM, SPIS, TWIM, TWIS,
+      UARTE, GPIOTE, DPPIC, WDT, EGU, GPIO, CTRL-AP, CLOCK, POWER,
+      RADIO, CCM, AAR, ECB, TEMP, RNG, TIMER, RTC, VMC} {
+    \pgfmathtruncatemacro{\c}{int(\i/9)}
+    \pgfmathtruncatemacro{\r}{mod(\i,9)}
+    \node[per] (n\i) at (6.4+1.5*\c, 5.0-0.45*\r) {\n};
+  }
+  \node[per, draw=red, very thick, text=red] at (n16) {RADIO};
+
+  % the cores share data through IPC
+  \draw[<->] (a23.east) -- (n1.west);
+
+\end{tikzpicture}
+\end{document}

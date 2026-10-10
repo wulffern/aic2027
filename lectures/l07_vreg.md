@@ -260,14 +260,14 @@ The same regulator might consume 5 mA even though the load is 1 uA, which would 
 <!--pan_doc:
 
 Most [product specifications](https://docs.nordicsemi.com/bundle/nRF5340_PS_v1.3.1/resource/nRF5340_PS_v1.3.1.pdf) will give you a view into what type of 
-regulators there are on an IC. The picture below is from nRF5340 (page 23)
+regulators there are on an IC. The figure below is redrawn from the nRF5340 product specification.
 
 -->
 
-![original fit](../media/l9_nrf53.pdf)
+![fit](../media/l07_nrf53_regs_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 4: Regulators in the nRF5340, from the product specification. Source: Nordic Semiconductor, nRF5340 Product Specification</sub>
+<sub>Figure 4: Regulators in the nRF5340: VREGH takes VDDH down onto the VDD rail, which feeds the GPIOs, VREGRADIO for the network core and VREGMAIN for the application core, while USBREG runs from VBUS. Redrawn from Nordic Semiconductor, nRF5340 Product Specification</sub>
 -->
 
 ---
@@ -726,18 +726,18 @@ So the whole of the inefficiency here is ripple current heating the switches, an
 
 ## Real world use
 
-DC/DC converters are used when power efficiency is important. Below is a screenshot of the hardware description in the [nRF5340 Product Specification](https://docs.nordicsemi.com/bundle/nRF5340_PS_v1.3.1/resource/nRF5340_PS_v1.3.1.pdf).
+DC/DC converters are used when power efficiency is important. Below is the DC/DC part of the reference schematic in the [nRF5340 Product Specification](https://docs.nordicsemi.com/bundle/nRF5340_PS_v1.3.1/resource/nRF5340_PS_v1.3.1.pdf).
 
-We can see 3 inductor/capacitor pairs. One for the "VDDH", and two for "DECRF" and "DECD", as such, we can make a good guess there are three DC/DC converters inside the nRF5340. 
+We can see three inductors: one on DCCH, which brings VDDH down to VDD, and two for DECRF and DECD. As such, we can make a good guess there are three DC/DC converters inside the nRF5340. 
 
 -->
 
 ---
 
-![original fit](../media/l9_sw_nRF53.png)
+![fit](../media/l07_nrf53_dcdc_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 17: nRF5340 application schematic with three inductor/capacitor pairs, revealing three internal DC/DC converters. Source: Nordic Semiconductor, nRF5340 Product Specification</sub>
+<sub>Figure 17: The DC/DC pins of the nRF5340, where the three inductors on DCC, DCCD and DCCH reveal three internal DC/DC converters. Simplified and redrawn from the reference schematic in Nordic Semiconductor, nRF5340 Product Specification</sub>
 -->
 
 ---

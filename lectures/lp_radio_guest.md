@@ -567,7 +567,7 @@ You can spend your life on PLLs.
 
 AD-PLL with Bang-Bang phase detector for steady-state 
 
-![inline](../media/pll_master_arch_28feb2020.pdf)
+![inline](../media/l10_adpll_bbpd_tikz.pdf)
 
 ---
 

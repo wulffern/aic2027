@@ -512,7 +512,7 @@ Consider other types of logic "rule breaking", so you should know why you need i
 ![inline 110%](../media/l13/fig_sar_logic.pdf)
 
 <!--pan_doc:
-<sub>Figure 29: Dynamic logic in a 9-bit SAR ADC - the binary weighted capacitor array with per-bit logic slices above, and the transistor level dynamic cells below</sub>
+<sub>Figure 29: Dynamic logic in a 9-bit SAR ADC - the binary weighted capacitor array with per-bit logic slices above, and the transistor level dynamic cells below. © 2017 IEEE. Reprinted, with permission, from [@wulff17]</sub>
 -->
 
 <sub><sub>Dynamic logic => A Compiled 9-bit 20-MS/s 3.5-fJ/conv.step SAR ADC in 28-nm FDSOI for Bluetooth Low Energy Receivers [@wulff17]</sub></sub>
@@ -1163,7 +1163,7 @@ VDDA AVDD_ATTACK 0 dc 0.5 pulse(1.5 0.6 tcd trf trf tapw taper)
 ![original fit](../media/l14/chipwisperer.png)
 
 <!--pan_doc:
-<sub>Figure 48: The ChipWhisperer web page, an open source platform for side channel power analysis and fault injection attacks on embedded systems</sub>
+<sub>Figure 48: The ChipWhisperer web page, an open source platform for side channel power analysis and fault injection attacks on embedded systems. Screenshot of [chipwhisperer.io](https://www.chipwhisperer.io)</sub>
 -->
 
 ---
@@ -1474,10 +1474,8 @@ Often 5 - 10 layers of metal
 ![right fit](../media/skymetal.png)
 
 <!--pan_doc:
-<sub>Figure 61: Cross section of the Skywater metal stack, five copper layers M1 to M5 below two aluminium layers M6 and M7</sub>
+<sub>Figure 61: Cross section of the SkyWater SKY90-FD metal stack, five copper layers M1 to M5 below two aluminium layers M6 and M7. Source: [Google Open Source Blog, 2022](https://opensource.googleblog.com/2022/07/SkyWater-and-Google-expand-open-source-program-to-new-90nm-technology.html)</sub>
 -->
-
-<!-- Figure from lect14-wires Integrated Circuit Design slide set -->
 
 ---
 [.background-color: #000000]
@@ -1550,13 +1548,14 @@ and high temperature (125 C)
 
 
 
-![right fit](../media/l16/metals.png)
-
-<!--pan_doc:
-<sub>Figure 62: Bulk resistivity in micro-ohm cm for silver, copper, gold, aluminium, tungsten and titanium</sub>
--->
-
-<!-- Figure from lect14-wires Integrated Circuit Design slide set -->
+| Metal | Bulk resistivity ($$\mu\Omega \cdot$$cm) |
+|:--|:--:|
+| Silver (Ag) | 1.6 |
+| Copper (Cu) | 1.7 |
+| Gold (Au) | 2.2 |
+| Aluminium (Al) | 2.8 |
+| Tungsten (W) | 5.3 |
+| Titanium (Ti) | 43.0 |
 
 ---
 # Contacts
@@ -1585,7 +1584,7 @@ An FSM where outputs depend on current state and inputs
 ![right fit](../media/mealy_machine_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 63: Mealy machine, where the input drives both the next-state logic and the output combinational block, so the output depends on input and current state</sub>
+<sub>Figure 62: Mealy machine, where the input drives both the next-state logic and the output combinational block, so the output depends on input and current state</sub>
 -->
 
 
@@ -1598,7 +1597,7 @@ An FSM where outputs depend on current state
 ![right fit](../media/moore_machine_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 64: Moore machine, where the output combinational block is driven only by the state register</sub>
+<sub>Figure 63: Moore machine, where the output combinational block is driven only by the state register</sub>
 -->
 
 ---
@@ -1648,7 +1647,7 @@ endmodule // counter
 ![inline](../media/charge_graph_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 65: Li-Ion charging profile, charge current and battery voltage against time through trickle charge, fast charge, constant voltage charge and charging complete</sub>
+<sub>Figure 64: Li-Ion charging profile, charge current and battery voltage against time through trickle charge, fast charge, constant voltage charge and charging complete</sub>
 -->
 
 ---
@@ -1667,7 +1666,7 @@ Most Li-Ion need to be charged to a termination voltage of 4.2 V
 ![right](../media/l19/18650.jpeg)
 
 <!--pan_doc:
-<sub>Figure 66: A Biltema ICR18650 rechargeable Li-ion cell rated 2950 mAh at 3.7 V</sub>
+<sub>Figure 65: A Biltema ICR18650 rechargeable Li-ion cell rated 2950 mAh at 3.7 V</sub>
 -->
 
 **Too high termination voltage, or too high charging current can cause growth of lithium dendrites, that short + and -. Will end in flames. Always check manufacturer datasheet for charging curves and voltages**
@@ -1687,7 +1686,7 @@ If charging complete, and voltage has dropped ($$V_{RECHARGE}$$), then start aga
 ![right 60%](../media/charge_graph_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 67: The charging profile marked with the thresholds the charger senses - the trickle to fast voltage, the termination voltage VTERM and the termination current ITERM</sub>
+<sub>Figure 66: The charging profile marked with the thresholds the charger senses - the trickle to fast voltage, the termination voltage VTERM and the termination current ITERM</sub>
 -->
 
 ---
@@ -1706,7 +1705,7 @@ Charging complete
 ![right 60%](../media/charge_graph_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 68: The charging profile divided into the four charger states - trickle charge at 0.1 C, fast charge at 1 C, constant voltage and charging complete</sub>
+<sub>Figure 67: The charging profile divided into the four charger states - trickle charge at 0.1 C, fast charge at 1 C, constant voltage and charging complete</sub>
 -->
 
 ---
@@ -1714,7 +1713,7 @@ Charging complete
 ![inline](../media/l19/bcharger.pdf)
 
 <!--pan_doc:
-<sub>Figure 69: Battery charger state machine, cycling trickle charge, fast charge, constant voltage and complete on the vtrkl, vterm, iterm and vrchrg flags</sub>
+<sub>Figure 68: Battery charger state machine, cycling trickle charge, fast charge, constant voltage and complete on the vtrkl, vterm, iterm and vrchrg flags</sub>
 -->
 
 ---
@@ -1754,7 +1753,7 @@ digraph finite_state_machine {
 ![inline fit ](../media/l19/bcharger.pdf)
 
 <!--pan_doc:
-<sub>Figure 70: The battery charger state diagram beside the SystemVerilog case statement that implements the next-state logic</sub>
+<sub>Figure 69: The battery charger state diagram beside the SystemVerilog case statement that implements the next-state logic</sub>
 -->
 
 ```verilog
@@ -1875,7 +1874,7 @@ clean
 ![original fit](../media/l19/bcharger_synth.pdf)
 
 <!--pan_doc:
-<sub>Figure 71: Gate level netlist of the battery charger after yosys synthesis to the SUN TR GF130N cell library, with six flip-flops and the next-state logic between them</sub>
+<sub>Figure 70: Gate level netlist of the battery charger after yosys synthesis to the SUN TR GF130N cell library, with six flip-flops and the next-state logic between them</sub>
 -->
 
 ---

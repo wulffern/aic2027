@@ -1,0 +1,121 @@
+\input{tikz/fig_header.tex}
+
+% Power system of the nRF54L15, after the regulator configuration in the
+% product specification. VDD (1.7 V - 3.6 V, decoupled by CVDD) feeds
+% VREGMAIN directly, and a second VDD rail feeds the GPIO blocks and the
+% RRAM. VREGMAIN holds a DC/DC and an LDO. The DC/DC switches the DCC
+% pin through the external inductor LDCC onto DECD, the low voltage
+% digital supply (decoupled by CDECD) that powers every power domain:
+% MCU, CRACEN, RRAM, peripherals, low power and radio. The LDO drives
+% DECA, the analog supply for the radio, which is also fed from DECD
+% through the ferrite bead FB. DECRF, the PA and LNA supply, is tied to
+% DECA outside the chip. Drawn as a ferrite bead with the inductor
+% symbol. Redrawn so the book does not carry the datasheet figure.
+
+\begin{tikzpicture}[thick, x=0.9cm, y=0.8cm, font=\small]
+
+  \input{tikz/ckt_lib.tex}
+
+  \tikzset{pin/.style={draw, fill=white, minimum size=0.18cm, inner sep=0pt}}
+
+  % chip outline
+  \draw (1.6,0.42) rectangle (13.43,8.58);
+
+  % VDD pin, external decoupling, VSS
+  \node[pin] at (1.6,7.83) {};
+  \node[anchor=south west] at (1.7,7.83) {VDD};
+  \draw (1.51,7.83) -- (0.93,7.83) -- (0.93,8.4);
+  \node[anchor=south] at (0.93,8.4) {VDD};
+  \fill (0.93,7.83) circle (0.075);
+  \draw (0.93,6.33) \vcapacitor{};
+  \draw (0.93,6.33) \vground;
+  \node[anchor=east] at (0.75,7.08) {$C_{VDD}$};
+  \node[pin] at (1.6,3.87) {};
+  \node[anchor=west] at (1.75,3.87) {VSS};
+  \draw (1.51,3.87) -- (0.8,3.87) -- (0.8,2.92);
+  \draw (0.8,2.92) \vground;
+
+  % VREGMAIN
+  \draw (6.2,6.53) rectangle (8.65,8.43);
+  \node at (7.42,8.12) {VREGMAIN};
+  \draw (6.55,7.35) rectangle (8.3,7.85);
+  \node at (7.42,7.6) {DC/DC};
+  \draw (6.55,6.65) rectangle (8.3,7.15);
+  \node at (7.42,6.9) {LDO};
+  \draw (1.69,7.83) -- (6.2,7.83);
+  \fill (3.72,7.83) circle (0.075);
+
+  % power domains along the bottom
+  \foreach \xa/\xb/\n in {1.84/3.47/MCU PD, 4.11/5.37/CRACEN, 5.52/6.90/RRAM,
+                          7.06/8.43/PERI PD, 9.09/10.25/LP PD} {
+    \draw (\xa,0.75) rectangle (\xb,2.95);
+    \node[font=\footnotesize] at ({(\xa+\xb)/2},1.85) {\n};
+  }
+  \foreach \xa/\xb in {3.47/3.97, 8.43/8.92, 10.25/10.74} {
+    \draw (\xa,0.75) rectangle (\xb,2.95);
+    \node[rotate=-90, font=\footnotesize] at ({(\xa+\xb)/2},1.85) {GPIO};
+  }
+  \draw (10.94,0.75) rectangle (12.67,1.32);
+  \node[font=\footnotesize] at (11.8,1.03) {RADIO};
+  \foreach \xa/\xb/\n in {10.94/11.50/RADIO PD, 11.50/12.10/ANALOG, 12.10/12.67/PA \& LNA} {
+    \draw (\xa,1.32) rectangle (\xb,2.95);
+    \node[rotate=-90, font=\scriptsize] at ({(\xa+\xb)/2},2.13) {\n};
+  }
+
+  % VDD to the GPIOs and the RRAM
+  \draw (3.72,7.83) -- (3.72,2.95);
+  \draw (3.72,5.15) -- (10.50,5.15) -- (10.50,2.95);
+  \fill (3.72,5.15) circle (0.075);
+  \foreach \x in {6.45, 8.67} {
+    \draw (\x,5.15) -- (\x,2.95);
+    \fill (\x,5.15) circle (0.075);
+  }
+
+  % DECD bus to every power domain
+  \draw (2.65,2.95) -- (2.65,5.92) -- (13.34,5.92);
+  \foreach \x in {4.73, 6.06, 7.75, 9.68, 11.22} {
+    \draw (\x,5.92) -- (\x,2.95);
+    \fill (\x,5.92) circle (0.075);
+  }
+
+  % DC/DC through DCC and LDCC onto DECD
+  \draw (8.3,7.6) -- (13.34,7.6);
+  \node[pin] at (13.43,7.6) {};
+  \node[anchor=south west] at (13.5,7.6) {DCC};
+  \draw (13.52,7.6) -- (14.6,7.6) to [L, l=$L_{DCC}$] (15.8,7.6) -- (16.08,7.6) -- (16.08,5.92);
+  \node[pin] at (13.43,5.92) {};
+  \node[anchor=south west] at (13.5,5.92) {DECD};
+  \draw (13.52,5.92) -- (16.08,5.92);
+  \fill (14.70,5.92) circle (0.075);
+  \fill (16.08,5.92) circle (0.075);
+  \draw (16.08,4.42) \vcapacitor{};
+  \draw (16.08,4.42) \vground;
+  \node[anchor=west] at (16.25,5.17) {$C_{DECD}$};
+
+  % LDO to DECA, ferrite bead from DECD
+  \draw (8.3,6.9) -- (12.18,6.9) -- (12.18,4.18);
+  \draw (11.80,2.95) -- (11.80,4.18) -- (13.34,4.18);
+  \fill (12.18,4.18) circle (0.075);
+  \node[pin] at (13.43,4.18) {};
+  \node[anchor=south west] at (13.5,4.18) {DECA};
+  \draw (14.70,5.92) to [L, l_=FB] (14.70,4.18);
+  \draw (13.52,4.18) -- (15.7,4.18);
+  \fill (14.28,4.18) circle (0.075);
+  \fill (14.70,4.18) circle (0.075);
+  \draw (15.7,2.67) \vcapacitor{};
+  \draw (15.7,2.67) \vground;
+  \node[anchor=west] at (15.85,3.42) {$C_{DECA}$};
+
+  % DECRF tied to DECA outside the chip
+  \draw (12.40,2.95) -- (12.40,3.47) -- (13.34,3.47);
+  \node[pin] at (13.43,3.47) {};
+  \node[anchor=south east] at (13.3,3.47) {DECRF};
+  \draw (13.52,3.47) -- (14.28,3.47);
+  \draw (14.28,4.18) -- (14.28,3.47);
+  \fill (14.28,3.47) circle (0.075);
+  \draw (14.28,1.97) \vcapacitor{};
+  \draw (14.28,1.97) \vground;
+  \node[anchor=north] at (14.28,1.6) {$C_{DECRF}$};
+
+\end{tikzpicture}
+\end{document}

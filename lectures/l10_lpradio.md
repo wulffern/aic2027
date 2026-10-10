@@ -1001,13 +1001,13 @@ If I were to pick, I'd make something like A 68 dB SNDR Compiled Noise-Shaping S
 ![left fit](../media/l6_harald_arch.gif)
 
 <!--pan_doc:
-<sub>Figure 20: Architecture of the noise-shaping SAR ADC: capacitive DAC with multiplexers, loop filter H(z), integrating comparator, SAR logic, calibration logic and code correction</sub>
+<sub>Figure 20: Architecture of the noise-shaping SAR ADC: capacitive DAC with multiplexers, loop filter H(z), integrating comparator, SAR logic, calibration logic and code correction. © 2019 IEEE. Reprinted, with permission, from [@garvik19]</sub>
 -->
 
 ![right fit](../media/l6_fig_harald_circuit.gif)
 
 <!--pan_doc:
-<sub>Figure 21: The switched-capacitor loop filter with two OTAs (the first one chopped), the clock phases relative to the SAR activity, and the resulting NTF with -27.8 dB in-band suppression</sub>
+<sub>Figure 21: The switched-capacitor loop filter with two OTAs (the first one chopped), the clock phases relative to the SAR activity, and the resulting NTF with -27.8 dB in-band suppression. © 2019 IEEE. Reprinted, with permission, from [@garvik19]</sub>
 -->
 
 ---
@@ -1034,7 +1034,7 @@ delay of the comparator automatically adjusts with capacitance corner, so it's m
 ![fit](../media/fig_sar_logic.pdf)
 
 <!--pan_doc:
-<sub>Figure 22: SAR ADC schematic: (a) capacitor array with self-timed SAR logic chain and comparator, (b) enable flip-flop, (c) bottom-plate switching of the CDAC, (d) comparator clock generation</sub>
+<sub>Figure 22: SAR ADC schematic: (a) capacitor array with self-timed SAR logic chain and comparator, (b) enable flip-flop, (c) bottom-plate switching of the CDAC, (d) comparator clock generation. © 2017 IEEE. Reprinted, with permission, from [@wulff17]</sub>
 -->
 
 ---
@@ -1051,7 +1051,7 @@ I have a completed ADC.
 ![fit](../media/l06_fig_toplevel.pdf)
 
 <!--pan_doc:
-<sub>Figure 23: Layout of the two compiled SAR ADCs with comparator, logic, CDAC and switch: (a) 180 nm IO-transistor version, (b) core-transistor version</sub>
+<sub>Figure 23: Layout of the two compiled SAR ADCs with comparator, logic, CDAC and switch: (a) 180 nm IO-transistor version, (b) core-transistor version. © 2017 IEEE. Reprinted, with permission, from [@wulff17]</sub>
 -->
 
 
@@ -1080,10 +1080,10 @@ You can spend your life on PLLs.
 ---
 AD-PLL with Bang-Bang phase detector for steady-state 
 
-![inline](../media/pll_master_arch_28feb2020.pdf)
+![inline](../media/l10_adpll_bbpd_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 25: All-digital PLL with a bang-bang phase detector for steady-state: phase error logic, digital loop filter, DCO calibration engine with frequency offset estimator, and steady-state detect</sub>
+<sub>Figure 25: All-digital PLL with a bang-bang phase detector for steady-state: phase error logic, digital loop filter, DCO calibration engine with frequency offset estimator, and steady-state detect. Redrawn from Cole Nielsen's master's thesis work, NTNU, 2020 ([thesis presentations](https://github.com/nielscol/thesis_presentations))</sub>
 -->
 
 ---
@@ -1154,11 +1154,6 @@ of it. That is the number the rest of this chapter is really about.
 
 
 
-![right 100%](../media/nrf53_rx.png)
-
-<!--pan_doc:
-<sub>Figure 26: nRF5340 radio specification: -97.5 dBm sensitivity at 1 Mbps Bluetooth LE, 2.6 mA in receive and 3.2 mA in transmit. Source: Nordic Semiconductor, nRF5340 Product Specification</sub>
--->
 
 ---
 
@@ -1170,10 +1165,10 @@ I hope you understand now that it's actually complicated.
 
 -->
 
-![fit](../media/nrf53.png)
+![fit](../media/l10_nrf53_blocks_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 27: nRF5340 block diagram, where the entire radio is the single RADIO block (circled) in the network core</sub>
+<sub>Figure 26: nRF5340 block diagram, where the entire radio is the single RADIO block (red) in the network core. Simplified and redrawn from Nordic Semiconductor, nRF5340 Product Specification</sub>
 -->
 
 ---

@@ -127,7 +127,7 @@ But why? I'll try to explain.
 
 <!--pan_doc:  
 
-See the example in Figure 2 from Nordic Semiconductor's nRF54L15 product specification. 
+See the example in Figure 2, redrawn from Nordic Semiconductor's nRF54L15 product specification. 
 
 VDD is the supply from the battery (1.7 V - 3.6 V). While the DECD, DECA and DECRF are the low voltage supplies for the digital, analog and radio. 
 
@@ -140,10 +140,10 @@ From the data-sheet you'll see that the lowest power state is about 700 nA, whil
 
 -->
 
-![inline](../media/nrf54L15_power.pdf)
+![inline](../media/l01_nrf54l15_power_tikz.pdf)
 
 <!--pan_doc: 
-<sub>Figure 2: Power system of nRF54L15 </sub>
+<sub>Figure 2: Power system of nRF54L15. Redrawn from Nordic Semiconductor, nRF54L15 Product Specification</sub>
 
 
 Those numbers are the total current consumption. That includes switching currents from digital,
