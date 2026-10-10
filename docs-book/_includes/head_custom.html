@@ -70,5 +70,11 @@
     opacity: 0.6;
     vertical-align: 0.1em;
   }
+  /* The phone menu indents its links 1rem, less than the mark is wide, so
+     the mark was cut off at the screen edge. Give them the 2rem the
+     desktop sidebar uses; every title moves together and stays aligned. */
+  @media (max-width: 49.99rem) {
+    .site-nav .nav-list .nav-list-item .nav-list-link { padding-left: 2rem; }
+  }
 </style>
 {%- endif %}
