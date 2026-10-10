@@ -192,8 +192,12 @@ def main():
         head, body = front_matter(text)
         title = re.search(r"title:\s*(.*)", head).group(1).strip()
         permalink = re.search(r"permalink:\s*(.*)", head).group(1).strip()
+        #- A chapter with an embedded recording gets a play mark in the
+        #  sidebar (head_custom.html), so a student can see which
+        #  chapters have a lecture video without opening each one.
+        extra = ["video: true"] if "youtube.com/embed" in body else None
         write_page(os.path.join(CHAPTERS, f"{n:02d}_{lid}.md"),
-                   title, CHAPTER_NAV_BASE + n, permalink, body)
+                   title, CHAPTER_NAV_BASE + n, permalink, body, extra)
     print(f"wrote {len(order)} chapters to docs-book/chapters/ "
           "in book order")
 

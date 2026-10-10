@@ -47,3 +47,28 @@
 </script>
 <script id="MathJax-script" async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+{%- comment -%}
+  Play mark before the sidebar entry of every chapter with a lecture
+  recording. py/mkbooksite.py sets `video: true` on those pages; the
+  selector list is built here because CSS cannot see front matter. Pure
+  CSS, so it shows with JavaScript off. \25B6\FE0E is the play triangle
+  forced to text style, so iOS does not swap in the emoji. It hangs in
+  the margin (negative margin, fixed width) so the titles stay aligned.
+{%- endcomment -%}
+{%- assign video_pages = site.pages | where: "video", true -%}
+{%- if video_pages.size > 0 %}
+<style>
+  {% for p in video_pages -%}
+  .site-nav .nav-list-link[href="{{ p.url | relative_url }}"]::before{% unless forloop.last %},{% endunless %}
+  {% endfor -%}
+  {
+    content: "\25B6\FE0E";
+    display: inline-block;
+    width: 1.6em;
+    margin-left: -1.6em;
+    font-size: 0.7em;
+    opacity: 0.6;
+    vertical-align: 0.1em;
+  }
+</style>
+{%- endif %}
