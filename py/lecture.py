@@ -363,16 +363,11 @@ class Lecture():
 
         for i in range(0,len(self.buffer)):
             line = self.buffer[i]
-            #- Find references
-            m = re.search(r"\s*\[\@([^\]]+)\]\s*",line)
-            if(m):
-                #print(m)
-                for key in m.groups():
-                    #print(key)
-                    md = self.bibtex.toMarkdownCite(key)
-                    #print(md)
-                    self.buffer[i] = line.replace(f"[@{key}]",md)
-                    #print(self.buffer[i])
+            #- Find references, all of them: a table row can cite several
+            for key in re.findall(r"\[\@([^\]]+)\]",line):
+                md = self.bibtex.toMarkdownCite(key)
+                line = line.replace(f"[@{key}]",md)
+            self.buffer[i] = line
 
         self.buffer.append(self.bibtex.toMarkdownRef())
 
