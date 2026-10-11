@@ -632,7 +632,7 @@ You may have seen the last equation before, now you know where it comes from.
 
 ## Understanding quantization
 
-Below I've tried to visualize the quantization process [q.py](https://github.com/wulffern/aic2027/blob/main/ex/q.py), which also exists as an [interactive page](https://wulffern.github.io/aic2027/assets/examples/quantization.html) where the number of bits is a slider and the SQNR is measured for you. 
+Below I've tried to visualize the quantization process [q.py](https://github.com/wulffern/aic2027/blob/main/ex/q.py), which also exists as an [interactive page](https://wulffern.github.io/aic2027/assets/examples/quantization.html) where the number of bits is a slider and the SQNR is measured for you. Every spectrum in this chapter is computed the same way, by [spectrum.py](https://github.com/wulffern/aic2027/blob/main/py/spectrum.py): a periodic Hann window, then the power averaged over 16 noise realisations and normalized to the largest bin. 
 
 The left most plot is a sinusoid signal and random      Gaussian noise. The signal is not a continuous time signal, since that's not possible on a digital computer, but it's an approximation. 
 
@@ -1284,7 +1284,7 @@ For each sample in the input vector $u$ I compute the input to the quantizer $x$
 
 The quantizer generates the next $y_{sd}$ and I have the option to add dither. 
 
-Three details in the full script are not in this excerpt and matter if you want to reproduce the plots. The input is scaled to 0.7 of full scale, because a true 1-bit loop overloads if you drive it all the way — the integrator runs away and the output degenerates into a slow square wave. The first two samples are thrown away, because the integrator starts at zero and needs a moment to settle. And the dither amplitude is a quarter of a quantizer step, which is enough to break up idle tones without swamping the signal.
+Four details in the full script are not in this excerpt and matter if you want to reproduce the plots. The input is scaled to 0.7 of full scale, because a true 1-bit loop overloads if you drive it all the way — the integrator runs away and the output degenerates into a slow square wave. The first two samples are thrown away, because the integrator starts at zero and needs a moment to settle. The dither has the same power as the quantization noise, $\Delta^2/12$, which is enough to break up idle tones without swamping the signal. And, like every spectrum in this chapter, the plotted spectra are power-averaged over 16 noise realisations: a single FFT of noise has bins that stand around 10 dB above the floor and look like spurs, while real tones are the same in every run and survive the averaging.
 
 One inconsistency is worth flagging rather than hiding. This `quantize` uses a step of $2/(2^B-1)$ for more than one bit, a mid-tread converter whose levels include zero, while the `adc` function earlier in this chapter uses $\Delta = 2/2^B$, a mid-rise converter with no zero level. Both are real converters and both appear in real silicon; they differ by half a step and by whether a zero input produces a zero output. The $\Delta^2/12$ result holds for either. Just do not mix the two definitions when you are comparing measured numbers against theory, which is exactly the sort of half-LSB discrepancy that costs an afternoon.
 
@@ -1308,7 +1308,7 @@ x = np.zeros(M)
 for n in range(1,M):
     x[n] = x[n-1] + (u[n]-y_sd[n-1])
     y_sd[n] = quantize(x[n]
-        + dither*np.random.randn()/(4*2**bits),bits)
+        + dither*np.random.randn()*(2/(2**bits-1))/np.sqrt(12),bits)
 
 ```
 ---
@@ -1336,7 +1336,7 @@ If we look at the noise we can also see the non-white quantization noise, which 
 
 In the figure below I've turned on dither, and we can see how the noise looks "better", which I know is not a qualitative statement, but ask anyone that's done 1-bit quantizers. It's important to have enough random noise.
 
-Be clear about what has been bought and what has been paid, though, because the y-axis of the plot tells both halves of the story. The distinct tones are gone and the floor is smooth, which is what "better" means here: a smooth floor is predictable, it does not move when the input does, and it will not land a spur in the middle of your signal band on a Tuesday. But the floor is also *higher*, and the notch at zero frequency is shallower. Running the loop with and without dither, the in-band signal-to-noise ratio drops by a decibel or two. Dither is not free noise reduction; it converts a small amount of signal-to-noise ratio into a large amount of predictability. That is usually a good trade for a 1-bit quantizer with a slow input, where the alternative is idle tones parked wherever the input DC level happens to put them, and a bad trade for a many-bit quantizer that was never going to produce tones in the first place.
+Be clear about what has been bought and what has been paid, though, because the y-axis of the plot tells both halves of the story. The distinct tones are gone and the floor is smooth, which is what "better" means here: a smooth floor is predictable, it does not move when the input does, and it will not land a spur in the middle of your signal band on a Tuesday. But the floor is also *higher*, and the notch at zero frequency is shallower. Running the loop with and without dither, the in-band signal-to-noise ratio at an oversampling ratio of 8 drops by roughly 6 dB. Dither is not free noise reduction; it converts signal-to-noise ratio into predictability. That is usually a good trade for a 1-bit quantizer with a slow input, where the alternative is idle tones parked wherever the input DC level happens to put them, and a bad trade for a many-bit quantizer that was never going to produce tones in the first place.
 
 -->
 
@@ -1350,17 +1350,59 @@ Be clear about what has been bought and what has been paid, though, because the 
 
 <!--pan_doc:
 
+How much dither is enough? A natural yardstick is the quantization noise itself. If quantization noise were white it would have power $\Delta^2/12$, so I give the dither power relative to that, and dither = 1 in the script means the two are equal.
+
+The figure below overlays the modulator output for no dither and for dither 12 dB below, equal to, and 12 dB above the quantization noise. Without dither the quantization noise is not white at all. It is a comb of tones, some within 10 dB of the signal. At −12 dB the tones are still there. At equal power the largest is about 8 dB above the floor, and what is left is mostly the smooth first-order slope that the linear model predicts. At +12 dB the tones are gone, and the floor has risen across the whole band.
+
+-->
+
+![fit](../media/l6_sd_dither_b1_tikz.pdf)
+
+<!--pan_doc:
+<sub>Figure 28: Output spectrum of the first-order 1-bit sigma-delta modulator for no dither and for dither power 12 dB below, equal to, and 12 dB above the quantization noise power $\Delta^2/12$. Without dither the noise is a comb of tones; with equal-power dither it is mostly the smooth first-order shaped floor</sub>
+-->
+
+---
+
+<!--pan_doc:
+
+Whether dither is needed depends on the input. A large input drives the integrator through so many states that the loop dithers itself, and the tones stay small. A small input, or one that sits near a DC level, does not, and that is where idle tones land in the signal band.
+
+The figure below shows it. It sweeps the input amplitude from −80 dBFS to full scale at an oversampling ratio of 1024, and measures the in-band signal-to-noise-and-distortion ratio (SNDR) and spurious-free dynamic range (SFDR). It uses a longer record than the spectra above, 262144 samples with the input at bin 37, so the band holds enough bins to measure in. The dashed line is the first-order estimate, $SQNR = 10\log_{10}\left(\frac{A^2/2}{\Delta^2/12}\right) - 5.17 + 30\log_{10}(OSR)$ for a sine of amplitude $A$. I've not used the familiar $6.02B + 1.76$, because it assumes $2^B$ steps across full scale. A 1-bit quantizer with outputs $\pm 1$ has one step, $\Delta = 2$, and the familiar form is 6 dB optimistic for it.
+
+Without dither the modulator is close to the estimate near full scale, and falls further below it as the input shrinks. At −40 dBFS it is 11 dB short. Below about −68 dBFS the output is a limit cycle that does not see the input at all. With dither at the power of the quantization noise the SNDR follows the estimate about 4 dB below it at every level up to −8 dBFS, and below −40 dBFS the SFDR is 18 to 35 dB better than without. Dither at −12 dB is not enough: it helps, but erratically.
+
+Why 4 dB, and not 3? Equal-power dither doubles the noise at the quantizer, which costs 3 dB, and a multi-bit quantizer loses about that: I measure 4 dB for a 5-bit loop. A 1-bit quantizer loses more, because it has no fixed gain. Its effective gain depends on what reaches its input, about 1.4 without dither and 0.85 with it at −12 dBFS, and in a first-order loop the in-band noise rises as the gain falls. Measured at −12 dBFS, dither costs the 1-bit loop 6 dB.
+
+Above about −25 dBFS dither costs SNDR, which is the price. Below it, dither is what makes the converter work.
+
+The linear model of the quantizer, an added white noise source, is only true once something makes it true. Dither is that something, and it is not free.
+
+Pictures by Carsten, Written by model, Approved by Carsten
+
+-->
+
+![fit](../media/l6_sd_sfdr_b1_tikz.pdf)
+
+<!--pan_doc:
+<sub>Figure 29: In-band SNDR and SFDR of the first-order 1-bit sigma-delta modulator at OSR = 1024 against input amplitude, without dither and with dither power 12 dB below and equal to the quantization noise power $\Delta^2/12$. The dashed line is the first-order SQNR estimate</sub>
+-->
+
+---
+
+<!--pan_doc:
+
 In papers it's common to use a logarithmic frequency axis, as shown below. In the plot I only show the positive 
 frequencies of the FFT. From the shape of the quantization noise we can also see the first order behavior, as a straight 20 dB per decade rise, which is much easier to read off a log axis than off the linear ones above.
 
-Two things have changed from the previous two figures, and it is worth saying so rather than letting you wonder. The quantizer here is 5-bit, not 1-bit, so the floor is far lower and there are no idle tones to speak of. And the y-axis is a magnitude spectrum in dB, not a power spectral density: nothing has been normalised to the bin width, so the absolute level is only meaningful relative to the tone.
+Two things have changed from the 1-bit figures above, and it is worth saying so rather than letting you wonder. The quantizer here is 5-bit, not 1-bit, so the floor is far lower and there are no idle tones to speak of. And the y-axis is a magnitude spectrum in dB, not a power spectral density: nothing has been normalised to the bin width, so the absolute level is only meaningful relative to the tone.
 
 -->
 
 ![fit](../media/l6_sdlog_d1_b5_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 28: Magnitude spectrum of the output of a 5-bit first-order sigma-delta modulator on a logarithmic frequency axis, showing the 20 dB/decade shaping of the quantization noise</sub>
+<sub>Figure 30: Magnitude spectrum of the output of a 5-bit first-order sigma-delta modulator on a logarithmic frequency axis, showing the 20 dB/decade shaping of the quantization noise</sub>
 -->
 
 ---
@@ -1393,7 +1435,7 @@ order filter one can use a lower OSR, and still achieve high ENOB.
 
 
 <!--pan_doc:
-<sub>Figure 29: Output spectrum of an open-loop sigma-delta modulator with a fifth-order NTF (two complex conjugate zero pairs and a zero at DC), reaching 13.8 bit ENOB and 84.9 dB SNDR</sub>
+<sub>Figure 31: Output spectrum of an open-loop sigma-delta modulator with a fifth-order NTF (two complex conjugate zero pairs and a zero at DC), reaching 13.8 bit ENOB and 84.9 dB SNDR</sub>
 
 ### Noise Shaped SAR
 
@@ -1419,7 +1461,7 @@ than the smallest capacitor.
 ![inline](../media/l6_harald_arch.gif)
 
 <!--pan_doc:
-<sub>Figure 30: Architecture of the noise-shaping SAR ADC: capacitive DAC with multiplexers, loop filter H(z), integrating comparator, SAR logic, calibration logic and code correction. © 2019 IEEE. Reprinted, with permission, from [@garvik19]</sub>
+<sub>Figure 32: Architecture of the noise-shaping SAR ADC: capacitive DAC with multiplexers, loop filter H(z), integrating comparator, SAR logic, calibration logic and code correction. © 2019 IEEE. Reprinted, with permission, from [@garvik19]</sub>
 -->
 
 ---
@@ -1433,7 +1475,7 @@ The loop filter was a switched cap loop filter, and we can see the NTF below. Th
 ![inline](../media/l6_fig_harald_circuit.gif)
 
 <!--pan_doc:
-<sub>Figure 31: The switched-capacitor loop filter with two OTAs (the first one chopped), the clock phases relative to the SAR activity, and the resulting NTF with -27.8 dB in-band suppression. © 2019 IEEE. Reprinted, with permission, from [@garvik19]</sub>
+<sub>Figure 33: The switched-capacitor loop filter with two OTAs (the first one chopped), the clock phases relative to the SAR activity, and the resulting NTF with -27.8 dB in-band suppression. © 2019 IEEE. Reprinted, with permission, from [@garvik19]</sub>
 -->
 
     
@@ -1463,7 +1505,7 @@ infer the state of the input $u(t)$ using a form of [Bayesian Statistics](https:
 ![inline](../media/l06_leapfrog_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 32: Block diagram of the Leapfrog control-bounded ADC: a chain of continuous-time integrators with local digital control loops s(t) that keep the analog states x(t) bounded. Redrawn from F. Feyling's master's thesis [@feyling21]</sub>
+<sub>Figure 34: Block diagram of the Leapfrog control-bounded ADC: a chain of continuous-time integrators with local digital control loops s(t) that keep the analog states x(t) bounded. Redrawn from F. Feyling's master's thesis [@feyling21]</sub>
 -->
 
 ---
@@ -1478,7 +1520,7 @@ zero frequency and a complex conjugate zero pair, a notch, near 6 MHz.
 ![inline](../media/l06_leapfrog_psd_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 33: Power spectral density of the estimated input of a third order Leapfrog control-bounded ADC with a 500 kHz tone, together with the NTF shifted onto the noise floor, a third-order shaping with a notch near 6 MHz. Simulated with cbadc (`ex/leapfrog_sim.py`), following F. Feyling's master's thesis [@feyling21]</sub>
+<sub>Figure 35: Power spectral density of the estimated input of a third order Leapfrog control-bounded ADC with a 500 kHz tone, together with the NTF shifted onto the noise floor, a third-order shaping with a notch near 6 MHz. Simulated with cbadc (`ex/leapfrog_sim.py`), following F. Feyling's master's thesis [@feyling21]</sub>
 -->
 
 ---
@@ -1498,7 +1540,7 @@ and that may look like an exercise in "Let's make something complex", however, m
 ![fit](../media/qt_sd_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 34: One stage of the quadrature modulator, with the second cascaded stage and the differential wiring left out. Inspired by Breems et al. [@breems07]</sub>
+<sub>Figure 36: One stage of the quadrature modulator, with the second cascaded stage and the differential wiring left out. Inspired by Breems et al. [@breems07]</sub>
 
 The cross-coupling in red is the whole of what makes it quadrature. Take
 it away and there are two independent real modulators, each with a noise
@@ -1534,7 +1576,7 @@ For more information, ask me, or see the patent at
 ![inline](../media/l6_patent.pdf)
 
 <!--pan_doc:
-<sub>Figure 35: Incremental first-order sigma-delta ADC from the patent: input and reference resistors into an OTA integrating on C, a clocked comparator as quantizer, and a counter as output filter</sub>
+<sub>Figure 37: Incremental first-order sigma-delta ADC from the patent: input and reference resistors into an OTA integrating on C, a clocked comparator as quantizer, and a counter as output filter</sub>
 -->
 
 ---

@@ -9,10 +9,8 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                 "..", "py"))
 from tikzplot import Figure
+from spectrum import averaged, db
 
-
-#- Enable hanning window
-hann = True
 
 #- Create a time vector
 N = 2**13
@@ -56,35 +54,17 @@ y_sn = adc(x_sn,bits)
 #----------------------------------------------
 # Plot spectrum
 #----------------------------------------------
-def freqDomain(x,hann=True):
-    N = len(x)
-    # Use hanning window to prevent FFT bin energy spread.
-    # N+1 with the last sample dropped is deliberate. It is exactly the
-    # periodic window 0.5 - 0.5*cos(2*pi*n/N), which is a sum of three
-    # DFT basis vectors: bins 0 and +-1, with weights 1/2, -1/4, -1/4.
-    # Multiplying by it therefore convolves the spectrum with three
-    # taps, so a tone sitting on an exact bin lands in exactly three
-    # bins and leaks nothing anywhere else. np.hanning(N) is the
-    # symmetric window, 0.5 - 0.5*cos(2*pi*n/(N-1)), which is not a
-    # combination of DFT basis vectors - it has N-1 nonzero DFT
-    # coefficients - so the same tone smears across every bin at about
-    # -45 dBc. Measured, not asserted (aic2023 issue #10).
-    if(hann):
-        w = np.hanning(N+1)
-    else:
-        w = np.ones(N+1)
-
-    # Convert to frequency domain
-    X= np.fft.fftshift(np.fft.fft(np.multiply(w[0:N],x)))
-
-    # Normalize to max output power
-    X = X/np.max(np.abs(X))
-    return X
+#- Window, averaging and normalization live in py/spectrum.py, shared
+#- with osr.py and sd_1st.py so every spectrum in the chapter is
+#- computed the same way.
+def record(seed):
+    np.random.seed(seed)
+    x_s = np.sin(2*np.pi*f1*t) + 1/2**15*np.random.randn(N)
+    x_sn = x_s[0::nfs]
+    return x_s, x_sn, adc(x_sn, bits)
 
 
-X_s = freqDomain(x_s,hann)
-X_sn = freqDomain(x_sn,hann)
-Y_sn = freqDomain(y_sn,hann)
+X_s, X_sn, Y_sn = averaged(record, seed=14)
 
 M = len(Y_sn)
 #- Frequency axes normalized to each record's own sample rate, so 0 Hz is
@@ -93,18 +73,18 @@ f_xs = (np.arange(0,N,1) - N/2)/N
 f_xn = (np.arange(0,M,1) - M/2)/M
 
 plt.subplot(1,3,1)
-plt.plot(f_xs,20*np.log10(np.abs(X_s)),color="black",linewidth=0.7)
+plt.plot(f_xs,db(X_s),color="black",linewidth=0.7)
 plt.grid(True)
 plt.xlabel("f / fs\nContinuous time, continuous value")
 plt.ylabel("Frequency Domain [dB20]")
 plt.ylim(-160,0)
 plt.subplot(1,3,2)
-plt.plot(f_xn,20*np.log10(np.abs(X_sn)),color="black",linewidth=0.7)
+plt.plot(f_xn,db(X_sn),color="black",linewidth=0.7)
 plt.grid(True)
 plt.xlabel("f / fs\nDiscrete time, continuous value")
 plt.ylim(-160,0)
 plt.subplot(1,3,3)
-plt.plot(f_xn,20*np.log10(np.abs(Y_sn)),color="black",linewidth=0.7)
+plt.plot(f_xn,db(Y_sn),color="black",linewidth=0.7)
 plt.grid(True)
 plt.xlabel("f / fs\nDiscrete time, Discrete value")
 plt.text(0.15,-35,str(bits) + "-bit\nf1 = bin " + str(int(f1*N)) + "\nf3 = bin " + str(int(f1*N*3)) + "\nf5 = bin " + str(int(f1*N*5)) + "\n(bin = f/fs × " + str(M) + ")")
@@ -123,14 +103,14 @@ def tikz(bits, n_pow, fdiv, suffix=""):
     N = 2**n_pow
     t = np.arange(N)
     f1 = 1/2**fdiv - 1/N
-    np.random.seed(14)
-    x_s = np.sin(2*np.pi*f1*t) + 1/2**15*np.random.randn(N)
-    x_sn = x_s[0::nfs]
-    y_sn = adc(x_sn, bits)
 
-    X_s = freqDomain(x_s, hann)
-    X_sn = freqDomain(x_sn, hann)
-    Y_sn = freqDomain(y_sn, hann)
+    def record(seed):
+        np.random.seed(seed)
+        x_s = np.sin(2*np.pi*f1*t) + 1/2**15*np.random.randn(N)
+        x_sn = x_s[0::nfs]
+        return x_s, x_sn, adc(x_sn, bits)
+
+    X_s, X_sn, Y_sn = averaged(record, seed=14)
     M = len(Y_sn)
     f_xs = (np.arange(0, N, 1) - N/2)/N
     f_xn = (np.arange(0, M, 1) - M/2)/M
@@ -154,10 +134,11 @@ being smaller in amplitude.""", columns=3)
         ax = tfig.axes(xlabel="$f/f_s$", title=name,
                        ylabel="Magnitude [dB20]" if i == 0 else None,
                        ylim=(-160, 0), width=4.6, height=5.0)
-        ax.plot(fx, 20*np.log10(np.abs(spec)), colour="black")
+        ax.plot(fx, db(spec), colour="black")
         if i == 2:
-            #- the chapter argues in bins, so keep them on the figure
-            ax.annotate(-0.47, -80,
+            #- the chapter argues in bins, so keep them on the figure;
+            #- below the floor when the floor is low (many bits)
+            ax.annotate(-0.47, -80 if bits < 6 else -100,
                         f"{bits}-bit\\\\ $f_1$ = bin {int(f1*N)}"
                         f"\\\\ $f_3$ = bin {int(f1*N*3)}"
                         f"\\\\ $f_5$ = bin {int(f1*N*5)}"

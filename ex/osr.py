@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                 "..", "py"))
 from tikzplot import Figure
+from spectrum import averaged, db, faxis
 
 
 
@@ -73,47 +74,38 @@ y_on = oversample(y_sn,OSR)
 #----------------------------------------------
 # Plot spectrum
 #----------------------------------------------
-def freqDomain(x):
-    N = len(x)
-    # Use hanning window to prevent FFT bin energy spread
-    w = np.hanning(N+1)
+#- Window, averaging and normalization live in py/spectrum.py, shared
+#- with q.py and sd_1st.py so every spectrum in the chapter is computed
+#- the same way.
+def record(seed, OSR):
+    np.random.seed(seed)
+    x_s = np.sin(2*np.pi*f1*t) + 1/2**15*np.random.randn(N)
+    x_sn = x_s[0::nfs]
+    y_sn = adc(x_sn, bits)
+    return x_s, x_sn, y_sn, oversample(y_sn, OSR)
 
-    # Convert to frequency domain
-    X= np.fft.fftshift(np.fft.fft(np.multiply(w[0:N],x)))
 
-    # Normalize to max output power
-    X = X/np.max(np.abs(X))
-    return X
-X_s = freqDomain(x_s)
-X_sn = freqDomain(x_sn)
-Y_sn = freqDomain(y_sn)
-Y_on = freqDomain(y_on)
-
-#- Frequency axes normalized to each record's own sample rate, so 0 Hz is
-#- in the middle and the edges are +/- fs/2
-def faxis(X):
-    M = len(X)
-    return (np.arange(0,M,1) - M/2)/M
+X_s, X_sn, Y_sn, Y_on = averaged(lambda seed: record(seed, OSR), seed=13)
 
 plt.subplot(1,4,1)
-plt.plot(faxis(X_s),20*np.log10(np.abs(X_s)),color="black",linewidth=0.7)
+plt.plot(faxis(X_s),db(X_s),color="black",linewidth=0.7)
 plt.grid(True)
 plt.xlabel("f / fs\nContinuous time, continuous value")
 plt.ylabel("Frequency Domain [dB20]")
 plt.ylim(-160,0)
 plt.subplot(1,4,2)
-plt.plot(faxis(X_sn),20*np.log10(np.abs(X_sn)),color="black",linewidth=0.7)
+plt.plot(faxis(X_sn),db(X_sn),color="black",linewidth=0.7)
 plt.grid(True)
 plt.xlabel("f / fs\nDiscrete time, continuous value")
 plt.ylim(-160,0)
 plt.subplot(1,4,3)
-plt.plot(faxis(Y_sn),20*np.log10(np.abs(Y_sn)),color="black",linewidth=0.7)
+plt.plot(faxis(Y_sn),db(Y_sn),color="black",linewidth=0.7)
 plt.grid(True)
 plt.xlabel("f / fs\nDiscrete time, Discrete value")
 plt.text(0.25,-10,str(bits) + "-bit")
 plt.ylim(-160,0)
 plt.subplot(1,4,4)
-plt.plot(faxis(Y_on),20*np.log10(np.abs(Y_on)),color="black",linewidth=0.7)
+plt.plot(faxis(Y_on),db(Y_on),color="black",linewidth=0.7)
 plt.grid(True)
 plt.xlabel("f / fs\nOversampled")
 plt.text(0.25,-10,"OSR=" + str(OSR))
@@ -127,8 +119,7 @@ plt.savefig("l6_osr_" + str(OSR) + ".pdf")
 #- The same four panels as TikZ, so the plot matches the schematics.
 #- Both oversampling ratios the lecture uses are emitted in one run.
 def tikz(OSR):
-    y_on = oversample(y_sn, OSR)
-    Y_on = freqDomain(y_on)
+    X_s, X_sn, Y_sn, Y_on = averaged(lambda seed: record(seed, OSR), seed=13)
 
     tfig = Figure(f"""Oversampling with a moving average, OSR = {OSR}.
 
@@ -151,7 +142,7 @@ when the decimation does happen.""", columns=4)
         ax = tfig.axes(xlabel="$f/f_s$", title=name,
                        ylabel="Magnitude [dB20]" if i == 0 else None,
                        ylim=(-160, 0), width=3.5, height=4.6)
-        ax.plot(faxis(spec), 20*np.log10(np.abs(spec)), colour="black")
+        ax.plot(faxis(spec), db(spec), colour="black")
         if note:
             ax.annotate(-0.47, -12, note, anchor="north west")
 
