@@ -36,12 +36,12 @@ your measurements.
 
 <!--pan_doc:
 
-I started writing wrote this chapter more than 20 years ago, so it
+I started writing this chapter more than 20 years ago, so it
 tries analogies that you might not even have heard of. I've kept the paragraph below for fun. 
 
-> Noise is a phenomenon that occurs in all electronic circuits. Noise place a
+> Noise is a phenomenon that occurs in all electronic circuits. Noise places a
 > lower limit on the smallest usable signal. Many now have super audio
-> compact disc (SACD)[^sacd] players with 24 bit digital to converters, 24 bits is around
+> compact disc (SACD)[^sacd] players with 24 bit digital to analog converters, 24 bits is around
 > $2^{24} = 16.78$ Million different levels. If 5 V is the maximum voltage,
 > the minimum would have to be $\frac{5V}{2^{24}} \approx 298nV$. That
 > level is roughly equivalent to the noise in a 50 Ohm resistor with a
@@ -80,7 +80,7 @@ But where does electronic noise come from? In classical physics you can have
 noise-less systems. A classical charge fluid could
 be as smooth as you like. 
 
-We live, however, in the world of Qauntum Electrodynamics (QED), where the states of particles are ruled by the Lagrangian
+We live, however, in the world of Quantum Electrodynamics (QED), where the states of particles are ruled by the Lagrangian
 of QED 
 
 $$ \mathcal{L} = \bar{\psi}[i \hbar c \gamma^\mu\partial_\mu - mc^2]\psi - q[\bar{\psi} \gamma^\mu \psi] A_\mu - \frac{1}{16 \pi}F_{\mu\nu}F^{\mu\nu} $$
@@ -91,13 +91,13 @@ If you stepped off the maths train before graduate level physics, then the
 equation above will make no sense to you. That's ok. The above equation has
 many smart people behind it, and you don't need to understand how to use it. The
 first part comes from the Dirac equation, the relativistic version of
-Schrodinger's equation, and describe the state evolution of bound and free
+Schrödinger's equation, and describes the state evolution of bound and free
 electrons. The latter parts eventually break down into Maxwell's equations, and
 is what happens when you require the Dirac equation to have local phase
 symmetry.
 
 For me it's always been a bit frustrating that the description of how the world
-works at the most fundamental level is written in the language of matricies, vectors,
+works at the most fundamental level is written in the language of matrices, vectors,
 tensors, bispinors, and differential equations. I'm not the greatest mathematician. But
 I've come to accept that "the maths describe how the world works, and if I want
 to understand the details of the world, then maths is the only way."
@@ -106,7 +106,7 @@ If you think the Lagrangian above is a nightmare, ask your agent
 "describe the Lagrangian of QCD", and afterwards "write out the QCD Lagrangian
 so I can see each matrix element and how they sum"
 
-For now, it's enough to know that guantum mechanics tells us things comes in
+For now, it's enough to know that quantum mechanics tells us things come in
 chunks; charge, energy, states, and these form the basis of electronic noise. 
 
 Electronic noise is literally how you can see quantum mechanics in action.
@@ -166,10 +166,10 @@ $$\begin{aligned}
 &= \: \lim_{T\to\infty} \frac{1}{T}\int^{+T/2}_{-T/2}{ x(t)x(t+\tau) dt}
 \end{aligned}$$
 
-The auto correlation answers the question "If I timeshift my signal, how similar
+The auto-correlation answers the question "If I time-shift my signal, how similar
 is a time shifted signal to itself", or I could argue "how periodic is a
-signal". A sinusoid obviously have a periodic autocorrelation as a function of $\tau$, while
-totally random noise with equal power at any frequency will only be simliar to itself at one $\tau$ value. 
+signal". A sinusoid obviously has a periodic autocorrelation as a function of $\tau$, while
+totally random noise with equal power at any frequency will only be similar to itself at one $\tau$ value. 
 -->
 
 <!--pan_skip: -->
@@ -252,7 +252,7 @@ different sources and can be whatever.
 With random noise it is useful to relate the average power to frequency. We call
 this Power Spectral Density (PSD).
 
-A PSD plot how much power a
+A PSD shows how much power a
 signal carries at each frequency. In literature $S_x(f)$ is often used
 to denote the PSD. In the same way that we use $V^2$ as unit of average
 power, the unit of the PSD is $V^2/Hz$ for voltage and
@@ -321,11 +321,11 @@ $$f_x = \frac{\pi f_0}{2} = \frac{1}{4 R C}$$
 where $f_x$ is the noise
 bandwidth and $f_0$ is the 3dB frequency.
 
-I haven’t told you this yet, but thermal noise is white, or gaussian, and white means
+I haven’t told you this yet, but thermal noise is white, or Gaussian, and white means
 that the power spectral density is flat (constant over all frequencies).
 
-I did tell you that the auto correlation function of a random signal with equal
-power at all frequencies only have a single $\tau$ with a value. And you may
+I did tell you that the auto-correlation function of a random signal with equal
+power at all frequencies only has a single $\tau$ with a value. And you may
 remember that the Fourier
 transform of a single Dirac-Delta function, $\delta(\tau)$ is indeed a flat spectrum, so I did in a way tell you, but 
 in a roundabout manner. 
@@ -585,7 +585,7 @@ different communities, for example [@gray.r.m] and
 [@ziel] where $S_x(f)$ is used for both $S_{x1}(f)$ and
 $S_{x2}(f)$. 
 
-When I started investigating spectral densities this lead
+When I started investigating spectral densities this led
 me to believe that different sources defined the same measure “spectral
 density” in two different ways. The more sources I investigated the more
 unsure I was about which of the two definitions that was correct. 
@@ -610,7 +610,7 @@ $$R_{x1}(\tau) = \frac{1}{2\pi}\int_{-\infty}^{\infty}{S_{x1}(f)e^{j\omega\tau}d
 ,since $dw = df dw/df = 2\pi df$. And for $S_{x2}$
 
 $$R_{x2}(\tau) = \frac{1}{2}\int_{-\infty}^{\infty}{S_{x2}(f)e^{jw\tau}df}$$
-Before we proceed lets get rid of the $e$’s. We know that $e^{j\alpha} =
+Before we proceed let's get rid of the $e$’s. We know that $e^{j\alpha} =
 \cos \alpha + j \sin \alpha$. So we could rewrite $S_{x1}$ as
 
 $$S_{x1}(f) = \int_{-\infty}^{\infty}{R_{x1}(\tau)[\cos(\omega \tau) + j \sin( \omega
@@ -737,7 +737,7 @@ function is often referred to as the *Wiener-Khintchine* theorem.
 Nyquist derived thermal noise in 1928 [@nyquist28]. Below is the Callen-Welton
 fluctuation-dissipation variant. 
 
-At thermal equilibrium a resistor feed energy into a circuit. The energy packets
+At thermal equilibrium a resistor feeds energy into a circuit. The energy packets
 are quantized in $hf$ chunks. 
 
 The spectral density can be computed as 
@@ -763,7 +763,7 @@ is 208 MHz.
 
 <!--pan_doc:
 
-A energy barrier, the type we find in diodes, will have shot noise caused by
+An energy barrier, the type we find in diodes, will have shot noise caused by
 electrons jumping the barrier at random intervals. 
 
 The noise power would be 
@@ -777,14 +777,14 @@ And the spectral density
 
 -->
 
-$$ S_I(f) = 2 q \abs( \overline (I) )\text{[ }A^2/Hz\text{]}
+$$ S_I(f) = 2q\vert\overline{I}\vert \text{ [A}^2\text{/Hz]} $$
 
 <!--pan_doc: 
 
 MOSFETs do have shot noise, but only in weak inversion when the dominant
 electron injection into the area under the gate would have an energy barrier
 still. As we increase inversion, and bend the conduction band, then the energy
-barrier dissapears, and so does shot-noise. 
+barrier disappears, and so does shot-noise. 
 
 -->
 
@@ -802,24 +802,24 @@ $$ 4kT\gamma g_m = 4kT\frac{n}{2}\frac{I_D}{nV_T} = 2qI_D $$
 
 <!--pan_doc: 
 
-If you have not read the "Referesher" chapter, then I highly recomend you look
+If you have not read the "Refresher" chapter, then I highly recommend you look
 at that now. To understand the following chapters you'll need to have a mental
 concept of quantum states, bonds between atoms (sharing of electrons), crystal
 lattice, band structures, energy bands, bound states, Hamiltonian. 
 
 If you can't be bothered, then here's a brief. 
 
-The states of electrons are goverend by the mathematics of quantum mechanics
+The states of electrons are governed by the mathematics of quantum mechanics
 (QED lagrangian). The equations tell us that around atom nucleus the electron
 can only exist in certain energy states, bound states. If there is no state that
 the electron can transition to, then it does not move. The probability of
 transitions between states is ruled by the energy matrix (Hamiltonian) in the
-Shrødinger equations. 
+Schrödinger equation. 
 
 Materials are solid because atoms share electron orbitals. Some have strong
 interaction, other interactions are weak. If you have a break in a Silicon
 Dioxide, then there will be states, or orbitals, that are not shared with any
-neighbours. These are dangling states, or trap, where electrons can jump to, should the
+neighbours. These are dangling states, or traps, where electrons can jump to, should the
 probabilities align. 
 
 -->
@@ -837,7 +837,7 @@ silicon atoms are left with a bond that has no partner, a dangling
 bond. The amorphous oxide has its own defects, oxygen vacancies
 and strained bonds, a few nanometres deep.
 
-During manufacture we insert hydrogen ions (h+) to nullify these dangling bonds.
+During manufacture we insert hydrogen ions (H+) to nullify these dangling bonds.
 
 During processing, however, there are high energy steps, like plasma etc, and
 plasma deposition, that can release the hydrogen, or indeed, we can break the
@@ -846,11 +846,11 @@ of hydrogen would be because there is a strong field across the oxide, so if we
 can limit the voltage drop across the oxide during manufacture, with a reverse,
 or forward diode, then we can prevent traps.
 
-For any critical MOSFET gate it's a good idea to have a n-diode to the
+For any critical MOSFET gate it's a good idea to have an n-diode to the
 substrate. It's ok to have a reverse diode only, because both plasma etch, and
 plasma deposition happen at high temperatures, and the diode leakage is larger
 than the injected charge. For chemical mechanical
-polish the potential is often negative compared to the substrate, so a n-diode
+polish the potential is often negative compared to the substrate, so an n-diode
 would be forward biased, and protect the gate
 
 -->
@@ -871,7 +871,7 @@ dimensional sheet underneath the gate, and that the probability density of where
 you'll find the electrons is given by the wave function. In the figure below we
 can see the wave function again. 
 
-Altough most of the electrons are away from the surface, there is a probability
+Although most of the electrons are away from the surface, there is a probability
 that they can jump to states inside the oxide, should there be a state to jump
 to. The probability falls off very quickly as we enter the oxide 
 
