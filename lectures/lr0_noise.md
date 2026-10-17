@@ -25,48 +25,36 @@ date: 2026-10-08
 
 <!--pan_doc:
 
-*This chapter was written by Carsten Wulff and Claude, Anthropic's AI,
-in collaboration. The statistics are Carsten's; the physics of where
-noise comes from, and the reading of the GR06 trap, were drafted by
-Claude from Carsten's outline and reviewed and edited by him.*
-
-The first part treats noise as statistics: a mean, a variance, a
-spectral density, and how they add through a circuit. The second part
-asks where the numbers come from. Thermal and shot noise take a slide
-each. Flicker noise takes the rest: we follow it all the way down to the
-single trap - one broken bond in the oxide that grabs an electron from
-the channel, holds it for a while, and lets it go. On a small
-transistor you can watch it happen, and on a chip from this course we
-do. Add up enough traps and you get the flicker noise of every MOSFET
-you will ever design with.
-
-Every step of that story is quantum mechanics: Schrödinger gives the
-trap its wave function and the channel electron its tail into the
-oxide, and Pauli decides how traps fill. We will not solve anything
-hard. We will follow the chain, and put a number on each link.
+This is an introduction to the concept of electronic noise. The mathematics, the
+physics, the phenomena. The goal is to give you an understanding of the pitfalls
+in noise, and how you can end up surprised (just like in "The Story of Jayn") by
+your measurements. 
 
 -->
 
 # The noise floor
 
 <!--pan_doc:
-Noise is a phenomenon that occurs in all electronic circuits. It places a
-lower limit on the smallest signal we can use. Many now have super audio
-compact disc (SACD)[^sacd] players with 24bit converters, 24 bits is around
-$2^{24} = 16.78$ Million different levels. If 5V is the maximum voltage,
-the minimum would have to be $\frac{5V}{2^{24}} \approx 298nV$. That
-level is roughly equivalent to the noise in a 50 Ohm resistor with a
-bandwidth of 96kHz. There exists an equation that relates number of bits
-to signal to noise ratio [@johns], the equation specifies
-that $SNR = 6.02*Bits +
-1.76 = 146.24dB$. Back in 2005 the best digital to analog converter
-(DAC) that Analog Devices (a very big semiconductor company) had was a
-DAC with 120dB SNR, that equals around $Bits = (120-1.76)/6.02 =
-19.64$. In other words, the last four bits of your SACD player is
-probably noise!
 
-[^sacd]: This paragraph is from the mid-2000s, when music came on
-    discs. The compact disc (CD), launched by Philips and Sony in 1982,
+I started writing wrote this chapter more than 20 years ago, so it
+tries analogies that you might not even have heard of. I've kept the paragraph below for fun. 
+
+> Noise is a phenomenon that occurs in all electronic circuits. Noise place a
+> lower limit on the smallest usable signal. Many now have super audio
+> compact disc (SACD)[^sacd] players with 24 bit digital to converters, 24 bits is around
+> $2^{24} = 16.78$ Million different levels. If 5 V is the maximum voltage,
+> the minimum would have to be $\frac{5V}{2^{24}} \approx 298nV$. That
+> level is roughly equivalent to the noise in a 50 Ohm resistor with a
+> bandwidth of 96 kHz. There exists an equation that relates number of bits
+> to signal to noise ratio [@johns], the equation specifies
+> that $SNR = 6.02*Bits +
+> 1.76 = 146.24\text{ }dB$. Back in 2005 the best digital to analog converter
+> (DAC) that Analog Devices (a leading semiconductor company) had was a
+> DAC with 120 dB SNR, that equals around $Bits = (120-1.76)/6.02 =
+> 19.64\text{ bits }$. In other words, the last four bits of your SACD player is
+> probably noise!
+
+[^sacd]:  The compact disc (CD), launched by Philips and Sony in 1982,
     stores two channels of 16-bit samples at 44.1 kHz, read from a
     spinning disc by a laser. The super audio CD (SACD), from the same
     two companies in 1999, stores the music as a 1-bit sigma-delta
@@ -86,26 +74,53 @@ The best DAC of 2005: 120 dB, about 19.6 bits
 
 ---
 
-# Three things that come in pieces
-
 <!--pan_doc:
 
-Classical physics has no noise floor. A classical charge fluid could
-be as smooth as you like. Real noise exists because three things come
-in pieces, and each piece gives one kind of transistor noise.
+But where does electronic noise come from? In classical physics you can have
+noise-less systems. A classical charge fluid could
+be as smooth as you like. 
+
+We live, however, in the world of Qauntum Electrodynamics (QED), where the states of particles are ruled by the Lagrangian
+of QED 
+
+$$ \mathcal{L} = \bar{\psi}[i \hbar c \gamma^\mu\partial_\mu - mc^2]\psi - q[\bar{\psi} \gamma^\mu \psi] A_\mu - \frac{1}{16 \pi}F_{\mu\nu}F^{\mu\nu} $$
+
+For more information, have a look at [Electromagnetism as a Gauge Theory](https://www.youtube.com/watch?v=Sj_GSBaUE1o)
+
+If you stepped off the maths train before graduate level physics, then the
+equation above will make no sense to you. That's ok. The above equation has
+many smart people behind it, and you don't need to understand how to use it. The
+first part comes from the Dirac equation, the relativistic version of
+Schrodinger's equation, and describe the state evolution of bound and free
+electrons. The latter parts eventually break down into Maxwell's equations, and
+is what happens when you require the Dirac equation to have local phase
+symmetry.
+
+For me it's always been a bit frustrating that the description of how the world
+works at the most fundamental level is written in the language of matricies, vectors,
+tensors, bispinors, and differential equations. I'm not the greatest mathematician. But
+I've come to accept that "the maths describe how the world works, and if I want
+to understand the details of the world, then maths is the only way."
+
+If you think the Lagrangian above is a nightmare, ask your agent 
+"describe the Lagrangian of QCD", and afterwards "write out the QCD Lagrangian
+so I can see each matrix element and how they sum"
+
+For now, it's enough to know that guantum mechanics tells us things comes in
+chunks; charge, energy, states, and these form the basis of electronic noise. 
+
+Electronic noise is literally how you can see quantum mechanics in action.
 
 -->
 
-| What is discrete | Noise it gives |
-|:----------------:|:--------------:|
-| Charge, $q$ | Shot noise, $2qI$ |
-| Energy per mode, $hf$ | Thermal noise, $4kTR$ |
+|          Chunk          |         Noise type          |
+|:-----------------------:|:---------------------------:|
+|       Charge, $q$       |      Shot noise, $2qI$      |
+|  Energy per mode, $hf$  |    Thermal noise, $4kTR$    |
 | Localized states, traps | Telegraph noise, then $1/f$ |
 
 <!--pan_doc:
 
-The first part of this chapter is the statistics we need to
-describe any of them. Then we go looking for where they come from.
 
 -->
 
@@ -114,29 +129,47 @@ describe any of them. Then we go looking for where they come from.
 # Statistics
 
 <!--pan_doc:
+
+It's a good idea to know a little bit about the mathematics of noise because
+it's possible to take some shortcuts if the noise has certain properties of
+randomness and values over time.
+
 The mean of a signal x(t) is defined as
 -->
 
 $$\overline{x(t)} = \lim_{T\to\infty} \frac{1}{T}\int^{+T/2}_{-T/2}{ x(t) dt} \tag{1}$$
 <!--pan_doc:
+
+The mean is the same as the average value.
+
 The mean square of x(t) defined as
 -->
 
 $$\overline{x^2(t)} =\lim_{T\to\infty} \frac{1}{T}\int^{+T/2}_{-T/2}{ x^2(t) dt} \tag{2}$$
 <!--pan_doc:
+
 The variance of x(t) defined as
 -->
 
 $$\sigma^2 = \overline{x^2(t)} - \overline{x(t)}^2 \tag{3}$$
 <!--pan_doc:
-For a signal with
-a mean of zero the variance is equal to the mean square. The
+
+Think of the variance as "how much does the signal vary". If we take the square
+root of the variance we get the standard deviation, or the sigma. For a signal with
+a mean of zero the variance is equal to the mean square. 
+
+The
 auto-correlation of x(t) is defined as
 
 $$\begin{aligned}
   R_x(\tau ) &= \overline{x(t)x(t + \tau)} \\
 &= \: \lim_{T\to\infty} \frac{1}{T}\int^{+T/2}_{-T/2}{ x(t)x(t+\tau) dt}
 \end{aligned}$$
+
+The auto correlation answers the question "If I timeshift my signal, how similar
+is a time shifted signal to itself", or I could argue "how periodic is a
+signal". A sinusoid obviously have a periodic autocorrelation as a function of $\tau$, while
+totally random noise with equal power at any frequency will only be simliar to itself at one $\tau$ value. 
 -->
 
 <!--pan_skip: -->
@@ -151,8 +184,8 @@ $$ R_x(\tau) = \overline{x(t)x(t + \tau)} $$
 Average power is defined for a continuous system by (4), and for
 discrete samples by (5). 
 
-$P_{av}$ usually has the
-unit $A^2$ or $V^2$, so we have to multiply/divide by the impedance to
+$P_{av}$ usually has the unit $A^2$ or $V^2$, 
+so we have to multiply/divide by the impedance to
 get the power in Watts. To get Volts and Amperes we use the
 root-mean-square (RMS) value which is defined as $\sqrt{P_{av}}$.
 -->
@@ -173,11 +206,11 @@ makes expressions look different.
 It is important to realize that it
 does not matter how you write average power and RMS value. If you want
 you can invent your own notation for average power and RMS value.
-However, if you are presenting your calculations to other people it is
+If you are presenting your calculations to other people, however, it is
 convenient if they understand what you have written. In the remainder of
 this chapter we will use $\overline{e_n^2}$ for average power when we talk
 about voltage noise source and $\overline{i_n^2}$ for average power when
-we talk about current noise source. The n subscript is used to identify
+we talk about current noise source. The $n$ subscript is used to identify
 different sources and can be whatever.
 
 <div class="minipage" markdown="1">
@@ -216,16 +249,18 @@ different sources and can be whatever.
 # Noise Spectrum
 
 <!--pan_doc:
-With random noise it is useful to relate the average power to frequency.
-We call this Power Spectral Density (PSD). A PSD plots how much power a
+With random noise it is useful to relate the average power to frequency. We call
+this Power Spectral Density (PSD).
+
+A PSD plot how much power a
 signal carries at each frequency. In literature $S_x(f)$ is often used
 to denote the PSD. In the same way that we use $V^2$ as unit of average
-power, the unit of the PSD is $\frac{V^2}{Hz}$ for voltage and
-$\frac{A^2}{Hz}$ current. The root spectral density is defined as
-$\sqrt{S_x(f)}$ and has unit $\frac{V}{\sqrt{Hz}}$ for voltage and
-$\frac{A}{\sqrt{Hz}}$ for current.
+power, the unit of the PSD is $V^2/Hz$ for voltage and
+$A^2/Hz$ current. The root spectral density is defined as
+$\sqrt{S_x(f)}$ and has unit $V/\sqrt{Hz}$ for voltage and
+$A/\sqrt{Hz}$ for current.
 
-The power spectral density is defined as two times the Fourier transform
+The power spectral density can be defined as two times the Fourier transform
 of the auto-correlation function [@ziel]
 -->
 
@@ -248,7 +283,7 @@ S_x(f) &= 2\left[\int_{-\infty}^{\infty}{R_x(\tau)\cos(\omega \tau)d\tau} - \int
   \tau)$, $R_x(\tau)$ and $\cos(\omega \tau)$ are symmetric around
 $\tau=0$ while $\sin(\omega \tau)$ is asymmetric around $\tau = 0$.
 
-The inverse of power spectral density is defined as
+The inverse of power spectral density can be defined as
 
 $$R_x(\tau)  = \frac{1}{2}\int_{-\infty}^{\infty}{S_x(f)e^{j 2 \pi f \tau} df} = \int_{0}^{\infty}{S_x(f) \cos(\omega \tau)df}$$
 
@@ -258,12 +293,12 @@ If we set $\tau=0$ we get
 $$\overline{x^2(t)} = \int_{0}^{\infty}{S_x(f)df} \tag{7}$$
 <!--pan_doc:
 which means we can
-easily calculate the average power if we know the power spectral
+calculate the average power if we know the power spectral
 density. As we will see later it is common to express noise sources in
 PSD form.
 
-Another very useful theorem when working with noise in the frequency
-domain is this
+Another useful theorem when working with noise in the frequency
+domain is 
 -->
 
 $$S_y(f) = S_x(f)\vert H(f)\vert ^2 \tag{8}$$
@@ -272,10 +307,12 @@ $$S_y(f) = S_x(f)\vert H(f)\vert ^2 \tag{8}$$
 spectral density, $S_x(f)$ is the input power spectral density and
 $H(f)$ is the transfer function of a time-invariant linear system.
 
-If we insert (8) into (7), with $S_x(f) = a\:constant = D_v$ we get
+If we insert (8) into (7), with $S_x(f) = \text{a constant} = D_v$ we get
 
 $$\overline{x^2(t)} = \int{S_y(f)df} = D_v\int{\vert H(f)\vert ^2 df} = D_v f_x$$
-, where $f_x$ is what we call the noise bandwidth. For a single time
+, where $f_x$ is what we call the noise bandwidth. 
+
+For a single time
 constant RC network the noise bandwidth is equal to
 -->
 
@@ -284,13 +321,20 @@ $$f_x = \frac{\pi f_0}{2} = \frac{1}{4 R C}$$
 where $f_x$ is the noise
 bandwidth and $f_0$ is the 3dB frequency.
 
-We haven’t told you this yet, but thermal noise is white and white means
+I haven’t told you this yet, but thermal noise is white, or gaussian, and white means
 that the power spectral density is flat (constant over all frequencies).
-If $S_x(f)$ is our thermal noise source and $H(f)$ is a standard low
+
+I did tell you that the auto correlation function of a random signal with equal
+power at all frequencies only have a single $\tau$ with a value. And you may
+remember that the Fourier
+transform of a single Dirac-Delta function, $\delta(\tau)$ is indeed a flat spectrum, so I did in a way tell you, but 
+in a roundabout manner. 
+
+If $S_x(f)$ is the thermal noise source and $H(f)$ is a standard low
 pass filter, then (8) tells us that the output spectral density will
 be shaped by $H(f)$. At frequencies above the
 $f_x$ in $H(f)$ we expect the root power spectral density to fall by
-20dB per decade.
+20 dB per decade.
 -->
 
 ---
@@ -361,7 +405,7 @@ White: the same power density at every frequency
 
 <!--pan_doc:
 Summing noise sources is usually trivial, but we need to know why and
-when it is not. If we write the time dependant noise signals as
+when it is not. If we write the time dependent noise signals as
 -->
 
 $$v_{tot}^2(t) = (v_1(t) + v_2(t))^2 = v_1^2(t) + 2v_1(t)v_2(t) + v_2^2(t)$$
@@ -414,7 +458,9 @@ $$\begin{aligned}
 <!--pan_doc:
 Another useful ratio is Signal to Noise and Distortion (SNDR), since
 most real systems exhibit non-linearities it is useful to include
-distortion in the ratio. One can calculate SNR and SNDR in many ways. If
+distortion in the ratio. 
+
+We can calculate SNR and SNDR in many ways. If
 we don’t know the expression for $\overline{e_{n}^2}$ we can do a FFT of
 our output signal. From this FFT we sum spectral components except at
 the signal frequency to get noise and distortion. SNR is normally
@@ -442,8 +488,9 @@ $$F =
   \frac{\overline{v_o^2}}{source\:contribution\:to\:\overline{v_o^2}}$$
 <!--pan_doc:
 where $\overline{v_o^2}$ 
+is the total output noise. 
 
-is the total output noise. The noise figure is defined as (noise factor in dB)
+The noise figure is defined as (noise factor in dB)
 -->
 
 $$NF = 10 \log(F)$$
@@ -456,6 +503,7 @@ $$F = \frac{SNR_{input}}{SNR_{output}}$$
 <!--pan_doc:
 This brings us right into what is known as Friis formula. The noise factor
 definition is only correct at room temperature, for more details, see [@friis].
+
 If we have a
 multistage system, for example several amplifiers in cascade, the total
 noise figure of the system is defined as
@@ -482,14 +530,7 @@ is important to amplify the noise as early as possible!
 
 ---
 
-# Spectral Density 
-
-<!--pan_doc:
-Warning: This is not an introduction to spectral density. If the subject
-is completely unfamiliar I’d advise reading another source. For example
-chapter 4 in [@johns] or chapter 7 in
-[@razavi].
--->
+# Spectral Density Confusion
 
 <!--pan_skip: -->
 
@@ -497,8 +538,6 @@ chapter 4 in [@johns] or chapter 7 in
 - Both: spectral density is the Fourier transform of the auto-correlation
 
 ---
-
-## Definition of Spectral Density
 
 <!--pan_doc:
 There are two different definitions of spectral density used in the
@@ -544,20 +583,28 @@ equal.
 The problem with spectral density arises when reading literature from
 different communities, for example [@gray.r.m] and
 [@ziel] where $S_x(f)$ is used for both $S_{x1}(f)$ and
-$S_{x2}(f)$. When I started investigating spectral densities this lead
+$S_{x2}(f)$. 
+
+When I started investigating spectral densities this lead
 me to believe that different sources defined the same measure “spectral
 density” in two different ways. The more sources I investigated the more
-unsure I was about which of the two definitions that was correct. After
+unsure I was about which of the two definitions that was correct. 
+
+After
 months of searching (not actively, but sporadically) I eventually found
 the original source of the definition of spectral density
-[@einstein14]. Having the original source helped, but I
+[@einstein14]. 
+
+Having the original source helped, but I
 still don’t know when the original definition split into the
-$S_{x1}$ and $S_{x2}$ forms above. However, I’m pretty sure it’s just
+$S_{x1}$ and $S_{x2}$ forms above. 
+
+I’m pretty sure it’s just
 a matter of convenience. To see why the $S_{x2}$ form is the most
-common among sources concerning noise we look at the inverse Fourier
-Transform. By the way, if you had not noticed yet, both forms say that
-*Spectral density is the Fourier Transform of the Auto-Correlation
-function*. The inverse Fourier Transform of $S_{x1}$ is
+common among noise sources  we can look at the inverse Fourier
+Transform. 
+
+The inverse Fourier Transform of $S_{x1}$ is
 
 $$R_{x1}(\tau) = \frac{1}{2\pi}\int_{-\infty}^{\infty}{S_{x1}(f)e^{j\omega\tau}dw} = \int_{-\infty}^{\infty}{S_{x1}(f)e^{j\omega\tau}df}$$
 ,since $dw = df dw/df = 2\pi df$. And for $S_{x2}$
@@ -623,8 +670,7 @@ $S_{x1}$: two-sided, signal processing books. $S_{x2}$: one-sided, noise books
 ## Example: Thermal Noise
 
 <!--pan_doc:
-The spectral density of thermal noise in electronic circuit should be
-known to anyone that has studied analog electronics. We normally define
+We normally define
 the voltage spectral density of thermal noise as
 -->
 
@@ -632,7 +678,9 @@ $$S_{th}(f) = 4kTR$$
 <!--pan_doc:
 where k is Boltzmann’s constant, T the temperature in
 Kelvin and R the resistance. But that is the spectral density in the
-one-sided $S_{x2}$ definition. If we were to use the two-sided
+one-sided $S_{x2}$ definition. 
+
+If we were to use the two-sided
 $S_{x1}$ definition, then the spectral density of thermal noise would
 be
 -->
@@ -641,7 +689,12 @@ $$S_{th}(f) = 2kTR$$
 <!--pan_doc:
 Both these spectral densities would give the same
 average power value if we use the inverse Fourier Transform of the
-matching definition.[^2]
+matching definition. 
+
+Notice that if you calculate the average power of $S_{th}(f)$ you’ll
+get infinity. You don't get infinity in the real world, we'll see later the
+quantum mechanical definition of thermal noise, and why there is nothing wrong
+with using $4kTR$ most of the time.
 -->
 
 ---
@@ -668,9 +721,7 @@ paper is very short, only 1 page, but it is worth reading. Note that
 the spectral density as the Fourier Transform of the auto-correlation
 function is often referred to as the *Wiener-Khintchine* theorem.
 
-[^2]: Note that if you calculate the average power of $S_{th}(f)$ you’ll
-    get infinity. You have to include the bandwidth of the circuit you
-    are considering for average power to have a finite value.
+
 -->
 
 ---
@@ -681,31 +732,61 @@ function is often referred to as the *Wiener-Khintchine* theorem.
 
 ## Thermal noise is Planck
 
-$$ S_V(f) = 4R\frac{hf}{e^{hf/kT}-1} \approx 4kTR \quad \text{if } hf \ll kT $$
+<!--pan_doc: 
+
+Nyquist derived thermal noise in 1928 [@nyquist28]. Below is the Callen-Welton
+fluctuation-dissipation variant. 
+
+At thermal equilibrium a resistor feed energy into a circuit. The energy packets
+are quantized in $hf$ chunks. 
+
+The spectral density can be computed as 
+
+-->
+
+$$ S_V(f) = 4R\frac{hf}{e^{hf/kT}-1 + \frac{hf}{2}} \approx 4kTR \quad \text{if } hf \ll kT $$
 
 $$ \frac{kT}{h} = 6.25 \text{ THz at 300 K} $$
 
 <!--pan_doc:
 
-Nyquist derived thermal noise in 1928 [@nyquist28], and he did not
-write $4kTR$. He wrote the Planck form above. A resistor in thermal
-equilibrium feeds energy into every electrical mode of the circuit
-around it, and each mode, being quantized in steps of $hf$, holds the
-Planck average energy. Below $kT/h$ every mode holds $kT$, and the
-density is flat.
-
-At room temperature $kT/h$ is 6 THz. No circuit in this course gets
-near it, which is why we may forget Planck and write $4kTR$. A
-superconducting qubit at 10 mK has $kT/h$ = 200 MHz, and there the
-quantum correction is the whole design problem.
+At room temperature $kT/h$ is 6 THz, so we usually don't have to worry about the
+quantum mechanical details. $4kTR$ is fine for most circuits you'll meet in the
+real world, maybe except for cryo-cooled quantum computers at 0.01 Kelvin where the frequency
+is 208 MHz.
 
 -->
 
 ---
 
-## Shot noise is the electron charge
+## Shot noise and electron charge
+
+<!--pan_doc:
+
+A energy barrier, the type we find in diodes, will have shot noise caused by
+electrons jumping the barrier at random intervals. 
+
+The noise power would be 
+-->
 
 $$ \overline{i_n^2} = 2qI\,\Delta f $$
+
+<!--pan_doc: 
+
+And the spectral density 
+
+-->
+
+$$ S_I(f) = 2 q \abs( \overline (I) )\text{[ }A^2/Hz\text{]}
+
+<!--pan_doc: 
+
+MOSFETs do have shot noise, but only in weak inversion when the dominant
+electron injection into the area under the gate would have an energy barrier
+still. As we increase inversion, and bend the conduction band, then the energy
+barrier dissapears, and so does shot-noise. 
+
+-->
 
 In weak inversion, with $\gamma = n/2$ and $g_m = I_D/nV_T$
 
@@ -713,71 +794,33 @@ $$ 4kT\gamma g_m = 4kT\frac{n}{2}\frac{I_D}{nV_T} = 2qI_D $$
 
 <!--pan_doc:
 
-Current that crosses a barrier one electron at a time is a stream of
-independent arrivals, and the arrivals are random. That is shot noise.
-
-In weak inversion the MOSFET is exactly that: electrons diffuse over the
-source barrier one at a time. Put the weak-inversion $\gamma$ and $g_m$
-into the thermal noise formula and it becomes $2qI_D$. Thermal noise
-and shot noise in a subthreshold transistor are the same noise,
-described twice.
-
 -->
 
 ---
 
-#[fit] Where flicker noise comes from
+#[fit] Telegraph/Burst-noise and flicker noise
 
----
+<!--pan_doc: 
 
-## Schrödinger
+If you have not read the "Referesher" chapter, then I highly recomend you look
+at that now. To understand the following chapters you'll need to have a mental
+concept of quantum states, bonds between atoms (sharing of electrons), crystal
+lattice, band structures, energy bands, bound states, Hamiltonian. 
 
-$$ i\hbar\frac{\partial}{\partial t}\Psi(\vec{r},t) = \left[-\frac{\hbar^2}{2m}\nabla^2 + V(\vec{r})\right]\Psi(\vec{r},t) $$
+If you can't be bothered, then here's a brief. 
 
-Stationary states, $\Psi = \psi(\vec{r})e^{-iEt/\hbar}$
+The states of electrons are goverend by the mathematics of quantum mechanics
+(QED lagrangian). The equations tell us that around atom nucleus the electron
+can only exist in certain energy states, bound states. If there is no state that
+the electron can transition to, then it does not move. The probability of
+transitions between states is ruled by the energy matrix (Hamiltonian) in the
+Shrødinger equations. 
 
-$$ -\frac{\hbar^2}{2m}\nabla^2\psi + V\psi = E\psi $$
-
-<!--pan_doc:
-
-The wave function $\Psi$ is a probability amplitude:
-$\vert\Psi\vert^2$ is the probability of finding the electron at
-$\vec{r}$. The potential $V$ is everything the electron feels - the
-silicon nuclei, the other electrons, the gate field.
-
-Three solutions of this equation carry the whole chapter. In a
-periodic crystal it gives energy bands, and near a band edge the
-electron moves as if free, with an effective mass. In the surface
-well of an inverted MOSFET it gives subbands, and the "2d sheet" of
-the MOSFET chapter. And at a broken bond it gives a bound state: a
-wave function localized to an atom or two, with an energy in the
-bandgap. That is a trap.
-
-The equation has one more thing to say, and we need it. Where $E < V$
-the solution does not stop. It decays as $e^{-\kappa x}$, with
-$\kappa = \sqrt{2m(V-E)}/\hbar$. The electron has a tail inside the
-barrier.
-
--->
-
----
-
-## Fermi-Dirac
-
-$$ f(E) = \frac{1}{1 + e^{(E - E_F)/kT}} $$
-
-$$ n = \int_{E_C}^{\infty} N(E) f(E)\, dE $$
-
-<!--pan_doc:
-
-The probability that a state at energy $E$ holds an electron.
-Electrons have spin $\frac{1}{2}$, and Pauli allows at most one
-electron per quantum state, so they fill states by Fermi-Dirac and not
-by Boltzmann. The MOSFET chapter used it to count the electrons in the
-conduction band: the density of states $N(E)$, from Schrödinger, times
-the occupation $f(E)$. We will use it again in two places: to
-decide which traps can switch, and to find out where the $kT$ in
-flicker noise comes from.
+Materials are solid because atoms share electron orbitals. Some have strong
+interaction, other interactions are weak. If you have a break in a Silicon
+Dioxide, then there will be states, or orbitals, that are not shared with any
+neighbours. These are dangling states, or trap, where electrons can jump to, should the
+probabilities align. 
 
 -->
 
@@ -787,26 +830,52 @@ flicker noise comes from.
 
 ---
 
-## What a trap is
+<!--pan_doc:
+
+Silicon and Silicon Oxide do not fit perfectly. At the interface some
+silicon atoms are left with a bond that has no partner, a dangling
+bond. The amorphous oxide has its own defects, oxygen vacancies
+and strained bonds, a few nanometres deep.
+
+During manufacture we insert hydrogen ions (h+) to nullify these dangling bonds.
+
+During processing, however, there are high energy steps, like plasma etc, and
+plasma deposition, that can release the hydrogen, or indeed, we can break the
+silicon, or silicon oxide lattice, and create new traps. The traps, and release
+of hydrogen would be because there is a strong field across the oxide, so if we
+can limit the voltage drop across the oxide during manufacture, with a reverse,
+or forward diode, then we can prevent traps.
+
+For any critical MOSFET gate it's a good idea to have a n-diode to the
+substrate. It's ok to have a reverse diode only, because both plasma etch, and
+plasma deposition happen at high temperatures, and the diode leakage is larger
+than the injected charge. For chemical mechanical
+polish the potential is often negative compared to the substrate, so a n-diode
+would be forward biased, and protect the gate
+
+-->
+
 
 - A broken bond at the Si/SiO2 interface, or a defect a few nm into the oxide
 - A bound state: $\psi_T$ localized to an atom or two
 - An energy $E_T$ inside the silicon bandgap
 
-<!--pan_doc:
-
-Silicon and its oxide do not fit perfectly. At the interface some
-silicon atoms are left with a bond that has no partner - a dangling
-bond - and the amorphous oxide has its own defects, oxygen vacancies
-and strained bonds, a few nanometres deep. Solve Schrödinger's equation
-around one and you get a bound state: a wave function localized to an
-atom or two, at an energy inside the bandgap.
-
--->
-
 ---
 
 ## The channel electron has a tail
+
+<!--pan_doc: 
+
+In the MOSFET chapter we learned that the inversion layer is a thin two
+dimensional sheet underneath the gate, and that the probability density of where
+you'll find the electrons is given by the wave function. In the figure below we
+can see the wave function again. 
+
+Altough most of the electrons are away from the surface, there is a probability
+that they can jump to states inside the oxide, should there be a state to jump
+to. The probability falls off very quickly as we enter the oxide 
+
+-->
 
 $$ \psi_{ch}(x) \propto e^{-\kappa x} \text{ in the oxide}, \quad \kappa = \frac{\sqrt{2 m_{ox}(\Phi_B - E)}}{\hbar} $$
 
@@ -816,11 +885,6 @@ $$ \Phi_B = 3.1 \text{ eV}, \quad m_{ox} \approx 0.5 m_0 \Rightarrow \kappa \app
 
 <!--pan_doc:
 <sub>Figure 1: The inversion layer in depth, from the MOSFET chapter. The density is drawn as zero at the interface - the oxide forbids the electrons there - but forbids is too strong. A small tail leaks into the oxide</sub>
-
-The MOSFET chapter drew the inversion electrons in the lowest subband
-of the surface well, with a density that goes to zero at the oxide. It
-is close to zero, not zero. The oxide is a barrier 3.1 eV high, and the
-Schrödinger equation inside a barrier gives an exponential.
 
 Put the numbers in: with an effective mass in the oxide of half the
 free electron mass, $\kappa$ is 6.4 per nanometre. The probability
