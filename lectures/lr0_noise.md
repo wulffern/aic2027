@@ -410,6 +410,7 @@ when it is not. If we write the time dependent noise signals as
 
 $$v_{tot}^2(t) = (v_1(t) + v_2(t))^2 = v_1^2(t) + 2v_1(t)v_2(t) + v_2^2(t)$$
 <!--pan_doc:
+
 The average power is defined as
 -->
 
@@ -425,15 +426,17 @@ $$\begin{aligned}
 ---
 
 <!--pan_doc:
-If $\overline{e_{1}^2}$ and $\overline{e_{2}^2}$ are uncorrelated noise
-sources we can skip the last term in
-the sum above and just write
+
+The last term is the co-variance of the two signals, which is zero for uncorrelated noise sources.
+As such, we could sum the noise sources as
+
 -->
 
 $$\overline{e_{tot}^2} = \overline{e_{1}^2} + \overline{e_{2}^2}$$
 <!--pan_doc:
-Most
-natural noise sources are uncorrelated.
+
+Most natural noise sources are uncorrelated. 
+
 -->
 
 <!--pan_skip: -->
@@ -461,10 +464,10 @@ most real systems exhibit non-linearities it is useful to include
 distortion in the ratio. 
 
 We can calculate SNR and SNDR in many ways. If
-we don’t know the expression for $\overline{e_{n}^2}$ we can do a FFT of
-our output signal. From this FFT we sum spectral components except at
-the signal frequency to get noise and distortion. SNR is normally
-calculated as
+we don’t know the expression for $\overline{e_{n}^2}$ we can do an FFT of
+our output signal. From the FFT we sum the signal bins into signal power, and the rest into noise power, or if we'd like, remove the harmonics. 
+
+SNR is normally calculated as
 
 $$SNR = 10
   \log\left(\frac{Signal\:power}{Noise\:power\:-\:6
@@ -492,15 +495,16 @@ is the total output noise.
 
 The noise figure is defined as (noise factor in dB)
 -->
-
 $$NF = 10 \log(F)$$
 <!--pan_doc:
+
 The noise factor can also be defined as
 -->
 
 $$F = \frac{SNR_{input}}{SNR_{output}}$$
 
 <!--pan_doc:
+
 This brings us right into what is known as Friis formula. The noise factor
 definition is only correct at room temperature, for more details, see [@friis].
 
@@ -540,6 +544,7 @@ is important to amplify the noise as early as possible!
 ---
 
 <!--pan_doc:
+
 There are two different definitions of spectral density used in the
 literature. They differ by a factor of two. The one used in signal
 processing books, like [@gray.r.m], is
@@ -547,22 +552,26 @@ processing books, like [@gray.r.m], is
 
 $$S_{x1}(f) = \int_{-\infty}^{\infty}{R_{x1}(\tau)e^{-j\omega\tau}d\tau}$$
 <!--pan_doc:
+
 And the one often used in books about noise, like [@ziel],
 is
 -->
 
 $$S_{x2}(f) = 2\int_{-\infty}^{\infty}{R_{x2}(\tau)e^{-j\omega\tau}d\tau}$$
 <!--pan_doc:
+
 In both cases $R_{xi}(\tau)$ is the auto-correlation function defined as
 
 $$R_{xi}(\tau) = \overline{x_i(t)x_i(t+\tau)}$$
+
 As we can plainly see
 
 $$S_{x1}(f) \neq S_{x2}(f)$$
-, there is no way these two can be made
-equal if
+
+, there is no way these two can be made equal if
 
 $$R_{x1}(\tau) = R_{x2}(\tau)$$
+
 This is ok, there is
 no problem having two different definitions for two different functions.
 In reality $S_{x1}(f)$ and $S_{x2}(f)$ are different functions of
@@ -571,6 +580,7 @@ frequency, and we could say that
 
 $$S_{x2}(f) = 2S_{x1}(f)$$
 <!--pan_doc:
+
 if the two auto-correlation functions are
 equal.
 -->
@@ -607,14 +617,17 @@ Transform.
 The inverse Fourier Transform of $S_{x1}$ is
 
 $$R_{x1}(\tau) = \frac{1}{2\pi}\int_{-\infty}^{\infty}{S_{x1}(f)e^{j\omega\tau}dw} = \int_{-\infty}^{\infty}{S_{x1}(f)e^{j\omega\tau}df}$$
+
 ,since $dw = df dw/df = 2\pi df$. And for $S_{x2}$
 
 $$R_{x2}(\tau) = \frac{1}{2}\int_{-\infty}^{\infty}{S_{x2}(f)e^{jw\tau}df}$$
+
 Before we proceed let's get rid of the $e$’s. We know that $e^{j\alpha} =
 \cos \alpha + j \sin \alpha$. So we could rewrite $S_{x1}$ as
 
 $$S_{x1}(f) = \int_{-\infty}^{\infty}{R_{x1}(\tau)[\cos(\omega \tau) + j \sin( \omega
   \tau)]d\tau}$$
+
 and it turns out that since $R_{x1}(\tau)$ is an even
 function we can drop the $j\sin{\omega \tau}$ term. $S_{x1}(f)$ is also
 an even function since the Fourier Transform of an even function is
@@ -642,6 +655,7 @@ and if $\tau = 0$
 
 $$\overline{x_2^2(t)} = \int_0^{\infty}{S_{x2}(f)df}$$
 <!--pan_doc:
+
 So using the
 $S_{x2}$ definition we see that average power (mean square value of
 $x_2(t)$) is equal to the integral from 0 to infinity of the spectral
@@ -650,11 +664,14 @@ density. If we use $S_{x1}$ instead, average power would be
 
 $$\overline{x_1^2(t)} = 2\int_0^{\infty}{S_{x1}(f)df}$$
 <!--pan_doc:
+
 But if
 $R_{x1}(\tau) = R_{x2}(\tau)$ then
 
 $$\overline{x_2^2(t)} = \overline{x_1^2(t)}$$
+
 even though
+
 $S_{x1}(f) \neq S_{x2}(f)$.
 
 $S_{x1}$ is called the two-sided spectral density, and $S_{x2}$ the
@@ -670,12 +687,12 @@ $S_{x1}$: two-sided, signal processing books. $S_{x2}$: one-sided, noise books
 ## Example: Thermal Noise
 
 <!--pan_doc:
-We normally define
-the voltage spectral density of thermal noise as
+We normally define the voltage spectral density of thermal noise as
 -->
 
 $$S_{th}(f) = 4kTR$$
 <!--pan_doc:
+
 where k is Boltzmann’s constant, T the temperature in
 Kelvin and R the resistance. But that is the spectral density in the
 one-sided $S_{x2}$ definition. 
@@ -687,6 +704,7 @@ be
 
 $$S_{th}(f) = 2kTR$$
 <!--pan_doc:
+
 Both these spectral densities would give the same
 average power value if we use the inverse Fourier Transform of the
 matching definition. 
@@ -710,12 +728,14 @@ auto-correlation function as
 
 $$\mathfrak{M} (\Delta) = \overline{F(t)F(t + \Delta)}$$
 <!--pan_doc:
+
 and the
 intensity (spectral density) as
 -->
 
 $$I(\theta) =  \int_0^{T}{\mathfrak{M}(\Delta) \cos ( \pi \frac{\Delta}{\theta})d\Delta}$$
 <!--pan_doc:
+
 ,where the period $\theta = T/n$ and $T$ is a very large value. The
 paper is very short, only 1 page, but it is worth reading. Note that
 the spectral density as the Fourier Transform of the auto-correlation
@@ -735,9 +755,7 @@ function is often referred to as the *Wiener-Khintchine* theorem.
 <!--pan_doc: 
 
 Nyquist derived thermal noise in 1928 [@nyquist28]. Below is the Callen-Welton
-fluctuation-dissipation variant. 
-
-At thermal equilibrium a resistor feeds energy into a circuit. The energy packets
+fluctuation-dissipation variant. At thermal equilibrium a resistor feeds energy into a circuit. The energy packets
 are quantized in $hf$ chunks. 
 
 The spectral density can be computed as 
@@ -783,7 +801,7 @@ $$ S_I(f) = 2q\vert\overline{I}\vert \text{ [A}^2\text{/Hz]} $$
 
 MOSFETs do have shot noise, but only in weak inversion when the dominant
 electron injection into the area under the gate would have an energy barrier
-still. As we increase inversion, and bend the conduction band, then the energy
+still. As we increase inversion, and bend the conduction band, the energy
 barrier disappears, and so does shot-noise. 
 
 -->
@@ -807,20 +825,19 @@ at that now. To understand the following chapters you'll need to have a mental
 concept of quantum states, bonds between atoms (sharing of electrons), crystal
 lattice, band structures, energy bands, bound states, Hamiltonian. 
 
-If you can't be bothered, then here's a brief. 
+If you can't be bothered to read another chapter first, then here's a brief. 
 
 The states of electrons are governed by the mathematics of quantum mechanics
-(QED lagrangian). The equations tell us that around atom nucleus the electron
+(QED Lagrangian). The equations tell us that around atom nucleus the electron
 can only exist in certain energy states, bound states. If there is no state that
 the electron can transition to, then it does not move. The probability of
-transitions between states is ruled by the energy matrix (Hamiltonian) in the
-Schrödinger equation. 
+transitions between states is ruled by QED Lagrangian.
 
 Materials are solid because atoms share electron orbitals. Some have strong
-interaction, other interactions are weak. If you have a break in a Silicon
-Dioxide, then there will be states, or orbitals, that are not shared with any
-neighbours. These are dangling states, or traps, where electrons can jump to, should the
-probabilities align. 
+interaction, other interactions are weak. 
+
+
+
 
 -->
 
@@ -832,29 +849,33 @@ probabilities align.
 
 <!--pan_doc:
 
-Silicon and Silicon Oxide do not fit perfectly. At the interface some
-silicon atoms are left with a bond that has no partner, a dangling
-bond. The amorphous oxide has its own defects, oxygen vacancies
-and strained bonds, a few nanometres deep.
+Materials are not perfect. Silicon is not a perfect crystal. The world is messy. Silicon and Silicon oxide do not have the same 
+lattice spacing. Amorphous oxide has defects, grain boundaries, oxygen vacancies and strained bonds. 
 
-During manufacture we insert hydrogen ions (H+) to nullify these dangling bonds.
+These imperfections lead to atoms that do not share their electrons orbitals with all their neighbours. 
+These "unshared orbitals" are dangling states, or traps, where electrons can jump to. 
 
-During processing, however, there are high energy steps, like plasma etc, and
-plasma deposition, that can release the hydrogen, or indeed, we can break the
-silicon, or silicon oxide lattice, and create new traps. The traps, and release
-of hydrogen would be because there is a strong field across the oxide, so if we
-can limit the voltage drop across the oxide during manufacture, with a reverse,
-or forward diode, then we can prevent traps.
+Materials are inherently neutral. There is an equal number of protons 
+and electrons. If we have dangling bonds that get occupied by an electron, then the material will have a negative charge. 
+A negative charge in the oxide of a NMOS transistor will increase the threshold voltage as the field between gate and source has
+to increase in order to keep the same inversion level. 
+
+To limit the number of the dangling bonds it's common to introduce hydrogen ions (H+) to nullify dangling bonds. 
+During processing, however, there are high energy steps, like plasma etch, and
+plasma deposition, that can introduce charges to MOSFET gates, or high impedance nodes,
+and release the hydrogen, or indeed, break the silicon oxide co-valent bonds, and create new traps.
 
 For any critical MOSFET gate it's a good idea to have an n-diode to the
 substrate. It's ok to have a reverse diode only, because both plasma etch, and
 plasma deposition happen at high temperatures, and the diode leakage is larger
-than the injected charge. For chemical mechanical
+than the injected charges per second. For chemical mechanical
 polish the potential is often negative compared to the substrate, so an n-diode
-would be forward biased, and protect the gate
+would be forward biased, and protect the gate.
+
 
 -->
 
+<!--pan_skip: -->
 
 - A broken bond at the Si/SiO2 interface, or a defect a few nm into the oxide
 - A bound state: $\psi_T$ localized to an atom or two
@@ -873,7 +894,9 @@ can see the wave function again.
 
 Although most of the electrons are away from the surface, there is a probability
 that they can jump to states inside the oxide, should there be a state to jump
-to. The probability falls off very quickly as we enter the oxide 
+to. 
+
+The equation below describe the exponential decay of a wave function as it penetrates or tunnels into a potential energy barrier.
 
 -->
 
@@ -914,7 +937,17 @@ traps a nanometre apart.
 
 ---
 
-## Dirac's golden rule
+## Fermi's golden rule (well, Dirac's really)
+
+<!--pan_doc: 
+
+The equation below is from Paul Dirac [@dirac27], but often referred to as Fermi's golden rule. 
+
+There are initial states ($\omega_ch$), final states ($\omega_T$) and Hamiltonian's (H'), and density of states $\rho(E)$ 
+and it's all confusing material. It's enough to know that yes, this thin describes the lifetime $\tau$ of and probability of transition per unit time.
+
+-->
+
 
 $$ \frac{1}{\tau} = \frac{2\pi}{\hbar}\left\vert\langle\psi_T\vert H'\vert\psi_{ch}\rangle\right\vert^2 \rho(E) $$
 
@@ -922,33 +955,21 @@ $$ \left\vert\langle\psi_T\vert H'\vert\psi_{ch}\rangle\right\vert^2 \propto e^{
 
 $$ \tau = \tau_0 e^{x_T/\lambda}, \quad \lambda = \frac{1}{2\kappa} \approx 0.08 \text{ nm} $$
 
-| Trap depth | $\tau$ ($\tau_0$ = 0.1 ns) |
-|:----------:|:--------------------------:|
-| 0 nm  | 0.1 ns |
-| 1 nm  | 40 µs |
-| 2 nm  | 13 s |
-| 3 nm  | 2 months |
 
 <!--pan_doc:
-
-The rate of a transition is the squared matrix element between the two
-states times the density of final states. Dirac worked it out in 1927
-[@dirac27], in his own bra-ket notation; Fermi later called it a
-"golden rule", and the name stuck to Fermi. The trap wave function is
-tiny, so the matrix element samples the channel wave function where
-the trap sits, and the squared matrix element inherits
-$e^{-2\kappa x_T}$.
-
-The table is the punchline. Three nanometres of oxide hold sixteen
-decades of time constant. No other mechanism in a transistor produces
-a spread like that, and it is exactly what $1/f$ noise needs, as we
-will see. The prefactor $\tau_0$ is rough - textbooks quote 0.1 ns
-give or take a decade - but the slope is set by the barrier, and
-that is the part that matters. McWhorter used the same tunnelling
-picture in 1957 [@mcwhorter57], twenty years before anyone saw a
-single trap.
+If we put the numbers in correct, then we can see from the table below that the lifetime has a huge variation with distance. 
+Move the trap by 1 nanometer, and you change the lifetime by orders of magnitude. 
 
 -->
+
+| Trap depth | $\tau$ ($\tau_0$ = 0.1 ns) |
+|:----------:|:--------------------------:|
+| 0 nm       | 0.1 ns                     |
+| 1 nm       | 40 µs                      |
+| 2 nm       | 13 s                       |
+| 3 nm       | 2 months                   |
+
+
 
 ---
 
