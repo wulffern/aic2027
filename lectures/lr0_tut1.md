@@ -757,7 +757,7 @@ Place all transistors on top of each other as shown below in the picture.
 ![](../media/rey_ex_place.png)
 
 <!--pan_doc:
-<sub>Figure 5: The transistor instances stacked on top of each other, before routing. The figures of the layout are drawn from the GDS with KLayout, so the colors differ from Magic</sub>
+<sub>Figure 5: The transistor instances stacked on top of each other, before routing. The layout figures are Magic, started in work/ so it uses the display style and colors from tech/magic</sub>
 -->
 
 ## Place devices
