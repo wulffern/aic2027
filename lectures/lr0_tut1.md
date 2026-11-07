@@ -10,7 +10,7 @@ date: 2025-10-26
 
 <!--pan_doc:
 
-**Keywords:** IP, xschem, ngspice, Corners, Layout, DRC, LVS, LPE, Documentation
+**Keywords:** IP, xschem, Symbol, ngspice, Corners, Layout, DRC, LVS, LPE, Documentation
 
 -->
 
@@ -28,11 +28,11 @@ shows how to start the docker image.
 
 I've made some scripts to automatically generate the IP. 
 
-To see what files are generated, see `tech_sky130A/cicconf/lelo.yaml`
+To see what files are generated, see `tech_sky130A/cicconf/rey.yaml`
 
 ```bash
 cd aicex/ip
-cicconf newip ex --project lelo --technology sky130A --ip  tech_sky130A/cicconf/lelo.yaml
+cicconf newip ex --project rey --technology sky130A --ip  tech_sky130A/cicconf/rey.yaml
 ```
 
 # The file structure 
@@ -80,6 +80,7 @@ the `README.md` and the `info.yaml`.
 A "cell" in the open source EDA world should consist of the following files
 
 - Schematic (.sch)
+- Symbol (.sym)
 - Layout (.mag)
 - Documentation (.md)
 
@@ -91,18 +92,18 @@ contain standard cells and standard analog transistors (ATR) that you should be 
 
 ```bash
 design
-  LELO_EX_SKY130A
-  LELO_EX.sch
-  JNW_ATR_SKY130A -> ../../jnw_atr_sky130a/design/JNW_ATR_SKY130A
-  JNW_TR_SKY130A -> ../../jnw_tr_sky130a/design/JNW_TR_SKY130A
+  REY_EX_SKY130A
+  REY_EX.sch
+  REY_ATR_SKY130A -> ../../rey_atr_sky130a/design/REY_ATR_SKY130A
+  REY_TR_SKY130A -> ../../rey_tr_sky130a/design/REY_TR_SKY130A
 ```
 
-For example, if the cell name was `LELO_EX`, then you would have 
+For example, if the cell name was `REY_EX`, then you would have 
 
-- `design/LELO_EX_SKY130A/LELO_EX.sch`: Schematic (xschem)
-- `design/LELO_EX_SKY130A/LELO_EX.sym`: Symbol (xschem)
-- `design/LELO_EX_SKY130A/LELO_EX.mag`: Layout (Magic)
-- `design/LELO_EX_SKY130A/LELO_EX.md` : Markdown documentation (any text editor)
+- `design/REY_EX_SKY130A/REY_EX.sch`: Schematic (xschem)
+- `design/REY_EX_SKY130A/REY_EX.sym`: Symbol (xschem)
+- `design/REY_EX_SKY130A/REY_EX.mag`: Layout (Magic)
+- `design/REY_EX_SKY130A/REY_EX.md` : Markdown documentation (any text editor)
 
 All these files are text files, so you can edit them in a text editor, but
 mostly you shouldn't (except for the Markdown)
@@ -114,7 +115,7 @@ simulation, then
 
 ```bash 
 cd sim 
-make cell CELL=LELO_EX
+make cell CELL=REY_EX
 ```
 This will make a simulation folder for you. Repeat for all your cells. 
 
@@ -146,13 +147,13 @@ work
 # Github setup
 
 Create a repository on [github](https://github.com).
-The name of the repository that you make on GitHub has to be the same as what is written after ```<your username>``` in the last command below. In this example, that is ```lelo_ex_sky130a```.
+The name of the repository that you make on GitHub has to be the same as what is written after ```<your username>``` in the last command below. In this example, that is ```rey_ex_sky130a```.
 
 
 ``` bash
-cd lelo_ex_sky130a
+cd rey_ex_sky130a
 git remote add origin \
- git@github.com:<your username>/lelo_ex_sky130a.git
+ git@github.com:<your username>/rey_ex_sky130a.git
 ```
 
 # Start working 
@@ -183,10 +184,13 @@ analog circuit. The open source schematic editor we will use is XSchem.
 Open the schematic:
 
 ```bash
-xschem -b ../design/LELO_EX_SKY130A/LELO_EX.sch &
+xschem -b ../design/REY_EX_SKY130A/REY_EX.sch &
 ```
 
 ## Add Ports
+
+The template has three ports. Keep VSS, and delete VDD\_1V8 and PWRUP\_1V8,
+since a current mirror has no supply.
 
 Add IBPS\_5U and IBNS\_20U ports, the P and N in the name signifies what
 transistor the current comes from. So IBPS must go into a diode connected NMOS,
@@ -194,8 +198,8 @@ and N will be our output, and go into a diode connected PMOS somewhere else.
 
 ## Add transistors
 
-Use 'I' or 'Shift+i' (note the letter case) to open the library manager. Click the `lelo_ex_sky130A/design`
-path, then `JNW_ATR_SKY130A` and select `JNWATR_NCH_4C5F0.sym`
+Use 'I' or 'Shift+i' (note the letter case) to open the library manager. Click the `rey_ex_sky130a/design`
+path, then `REY_ATR_SKY130A` and select `REYATR_NCH_4C5F0.sym`
 
 The naming convention for these transistors is `<number of contacts on
 drain/source>C<times minimum gate length>F`, so the number before the C is the width,
@@ -228,10 +232,10 @@ Use 'f' to zoom full screen
 
 Remember to save the schematic
 
-![fit](../media/lelo_ex_tikz.pdf)
+![fit](../media/rey_ex_tikz.pdf)
 
 <!--pan_doc:
-<sub>Figure 1: The finished LELO_EX schematic - one diode connected input instance and two output instances of two devices each, between the IBPS_5U, IBNS_20U and VSS ports. Four output devices to one input device is where the 5 uA in and 20 uA out of the port names comes from. The devices are the JNWATR_NCH_4C5F0 symbol itself, converted from the library you are placing them from, so the page and the canvas cannot drift apart</sub>
+<sub>Figure 1: The finished REY_EX schematic - one diode connected input instance and two output instances of two devices each, between the IBPS_5U, IBNS_20U and VSS ports. Four output devices to one input device is where the 5 uA in and 20 uA out of the port names comes from</sub>
 -->
 
 ## Netlist schematic
@@ -240,9 +244,57 @@ Check that the netlist looks OK
 
 In work/
 ``` bash
-make xsch CELL=LELO_EX
-cat xsch/LELO_EX.spice
+make xsch CELL=REY_EX
+cat xsch/REY_EX.spice
 ```
+
+## Make a symbol
+
+The schematic describes what is inside a cell. The symbol describes the cell
+from the outside: its name, its pins, and how it should be netlisted. A parent
+schematic only ever places the symbol, so without one, nobody can use your cell.
+
+With the schematic open, press 'a' (Symbol -> Make symbol from schematic).
+Xschem writes `design/REY_EX_SKY130A/REY_EX.sym`, next to the schematic, with a
+pin for each port. Input ports go on the left, and output ports go on the right.
+
+The symbol is a text file.
+
+``` bash
+cat ../design/REY_EX_SKY130A/REY_EX.sym
+```
+
+The first lines say how to netlist it
+
+```
+K {type=subcircuit
+format="@name @pinlist @symname"
+template="name=x1"
+}
+```
+
+- `type=subcircuit`: the instance is an X line that calls the `.subckt` made from
+  the schematic.
+- `format`: how to write that line. Instance name, then the nets on the pins, then
+  the cell name.
+- `template`: the default instance name.
+
+Each pin is a small box on layer 5, which has the name of a port in the schematic
+
+```
+B 5 -152.5 -12.5 -147.5 -7.5 {name=IBPS_5U dir=in}
+```
+
+The names must match the ports exactly, that is how the netlist finds the
+connection. The other lines, `L`, `P` and `T`, are lines, the outline and text.
+They only change how the symbol looks, so edit them if you want a nicer picture.
+
+Make the symbol again every time you add, remove or rename a port. Press 'a', and
+accept the question about overwriting.
+
+To use the cell, open another schematic, press 'Shift+i', and select
+`REY_EX_SKY130A/REY_EX.sym`. Select the instance and press 'e' to go down into the
+schematic. 'Ctrl+e' takes you back up.
 
 ---
 
@@ -252,12 +304,12 @@ I've made [cicsim](https://github.com/wulffern/cicsim) that I use to run simulat
 results
 
 ## Setup simulation environment
-Navigate to the `lelo_ex_sky130a/sim/` directory.
+Navigate to the `rey_ex_sky130a/sim/` directory.
 
 Make a new simulation folder
 
 ``` bash
-cicsim simcell  LELO_EX_SKY130A LELO_EX \
+cicsim simcell  REY_EX_SKY130A REY_EX \
     ../tech/cicsim/cell_spice/template.yaml
 ```
 
@@ -282,7 +334,7 @@ reference, these are what the files are used for
 The default setup should run, so
 
 ``` bash
-cd LELO_EX
+cd REY_EX
 make typical
 ```
 
@@ -493,10 +545,10 @@ Install [pandoc](https://pandoc.org) if you don't have it
 Run
 
 ``` bash
-pandoc -s   README.md -o README.html
+pandoc -s --metadata title="REY_EX" README.md -o README.html
 ```
 
-to generate a HTML slideshow that you can open in browser. Open the HTML file.
+to generate a web page. Open the HTML file in a browser.
 
 ## Viewing results without GUI browser 
 
@@ -546,7 +598,7 @@ Open Magic VLSI
 
 ``` bash
 cd work
-magic ../design/LELO_EX_SKY130A/LELO_EX.mag
+magic ../design/REY_EX_SKY130A/REY_EX.mag
 ```
 
 Now brace yourself, Magic VLSI was created in the 1980's. For its time it was extremely modern,
@@ -596,10 +648,10 @@ on-top of eachother, but it's a bit finicky.
 
 Place all transistors on top of each other as shown below in the picture. 
 
-![](../media/LELO_EX_place.png)
+![](../media/rey_ex_place.png)
 
 <!--pan_doc:
-<sub>Figure 2: Magic with the transistor instances stacked on top of each other, shown as boxes on the left and with layers drawn on the right</sub>
+<sub>Figure 2: The transistor instances stacked on top of each other, before routing. The figures of the layout are drawn from the GDS with KLayout, so the colors differ from Magic</sub>
 -->
 
 ## Place devices
@@ -609,90 +661,128 @@ place the devices, and to follow the design rules from foundry. I detest tedious
 work. As such, I've tried for the past 25 years to simplify analog layout. I've
 not finished yet, but maybe you'll find some of the scripts useful. 
 
-Note that the command below will override all your hard work ;-) 
-
+Note that the command below will override all your hard work ;-) Quit Magic
+first, and never run it again once you've routed the cell, it overwrites the
+routing too.
 
 ```
 cd work
 make xsch
-cicpy sch2mag LELO_EX_SKY130A LELO_EX
+cicpy sch2mag REY_EX_SKY130A REY_EX
+magic ../design/REY_EX_SKY130A/REY_EX.mag
 ```
 
-## Add Ground
+It stacks the five devices and writes `REY_EX.mag`, `REY_EX.cic` and `REY_EX.py`.
 
-In the command window, type
+It also does two things you might have done by hand. The drain and gate of `xo1`
+are on the same net, so it uses `REYATR_NCH_4C5F0D`, the diode connected twin of
+the transistor. It also adds the three ports.
+
+## Route with the Magic console
+
+All the pins of a REY transistor are on locali, and the guard rings form a wall of
+substrate contact on each side of the stack. That makes this a short route.
+
+You can draw each of the rectangles below with the mouse. Left click sets the
+bottom corner of the box, right click sets the top corner, and middle click on a
+layer in the palette paints it. Or type the commands in the console window. I
+give the commands since the exact numbers matter.
+
+Start by looking at the layers we need, and press 'x' to expand the transistors
 
 ```tcl
 see no *
 see viali
 see locali
 see m1
-see via1
-see m2
 ```
 
-Make a box around the layout by left clicking bottom left, and right clicking top
-right. Press 'x' to expand.
+## Add Ground
 
+Paint a 1 um locali rail below the stack, wide enough to touch both guard rings.
+Then connect the sources of all the transistors with a locali strip down to the
+rail.
 
-Change grid to 1 um. Set "Window->Snap to grid on"
+```tcl
+box -0.48um -1.2um 8.48um -0.2um
+paint locali
+box 2.4um -0.2um 2.72um 19.8um
+paint locali
+```
 
-Select a 1 um box below the transistors and paint the rectangle with locali (middle click on locali)
-
-Change to the 'wire tool' with spacebar. Set "Window-> Snap to grid off"
-
-Connect guard rings to ground. 
-
-Press the top transistor 'S' and draw
-all the way down to connect all of the transistors' source terminals. Use 'shift-right click' to
-change layer down 
-
-![](../media/ground.png)
+![](../media/rey_ex_ground.png)
 
 <!--pan_doc:
-<sub>Figure 3: The source terminals of all transistors connected down to the ground rail, DRC clean</sub>
+<sub>Figure 3: The locali rail below the stack ties the guard rings and the sources of all five transistors to ground</sub>
 -->
 
 ## Route Gates
 
-Press "space" to enter wire mode. Left click on the top gate to start a wire, and right click to end the wire.
+Each transistor has a gate contact on each side. Connect the left ones with a
+locali strip.
 
-The drain of M1 transistor needs a connection from gate to drain. We do that
-for the middle transistor. Change to the box tool (spacebar a few times). Create
-a box that matches the locali. Connect the drain to the gate in locali.
+```tcl
+box 1.76um 1.4um 2.08um 18.6um
+paint locali
+```
 
+The strip does not touch the sources, there's 0.32 um between them.
 
+We don't need to connect the drain of `xo1` to the gate, since
+`REYATR_NCH_4C5F0D` already has that locali on the right side of the transistor.
+The poly carries the connection across to the strip.
 
-![](../media/gates.png)
+![](../media/rey_ex_gates.png)
 
 <!--pan_doc:
-<sub>Figure 4: The gates routed together, with the gate to drain connection of M1 made in locali</sub>
+<sub>Figure 4: The gates connected by a locali strip on the left side of the stack</sub>
 -->
 
-## Drain of M2
+## Drain of the output transistors
 
-Use the wire tool to draw connections for the drains.
+The output current comes from four drains, but `xo1` sits in the middle of the
+stack, and its drain is a different net. We can't use a locali strip, so we need to
+go up to metal1 and pass over `xo1`.
 
-To add vias you can do "shift-left click" to move up a metal, and "shift-right click" to go down.
+Put a via in the free part of each output drain, to the right of the contacts.
+Then connect the vias with metal1.
+
+```tcl
+box 4.7um 1.915um 4.87um 2.085um
+paint viali
+box 4.7um 5.915um 4.87um 6.085um
+paint viali
+box 4.7um 13.915um 4.87um 14.085um
+paint viali
+box 4.7um 17.915um 4.87um 18.085um
+paint viali
+box 4.625um 1.8um 4.945um 18.2um
+paint m1
+save
+```
+
+There's no via in the middle transistor, so the metal1 strip stays disconnected
+from the drain of `xo1`.
 
 It's a very good idea to have direction rules for metal layers. I would
 recommend that you route metal1 vertical, metal2 horizontal, metal3 vertical
 etc. For locali it's usually all over the place. 
 
-
-![](../media/drains.png)
+![](../media/rey_ex_drains.png)
 
 <!--pan_doc:
-<sub>Figure 5: The drain connections routed with the wire tool, using vias to change metal layer</sub>
+<sub>Figure 5: The completed REY_EX layout. The metal1 strip connects the drains of the four output transistors, and passes over the input transistor in the middle, without a via</sub>
 -->
 
-## Add labels
+## Check the labels
 
-All ports must be named (IBPS\_5U, IBNS\_20U, VSS). The cicpy script may add
-ports, but not necessarily where you want them.
+All ports must be named (IBPS\_5U, IBNS\_20U, VSS). The cicpy script already put
+them on the gate, drain and source of `xo0<0>`, the bottom transistor. They are on
+the right nets, so we can keep them.
 
-Select a box on a metal, and use "Edit->Text" to add labels for the ports.
-Select the port button.
+A port is not always where you want it. To move one, select a box on the metal, and
+use "Edit->Text". Select the port button. Delete the old label first, a port number
+can only be used once.
 
 ---
 
@@ -700,24 +790,18 @@ Select the port button.
 
 The DRC can be seen directly in Magic VLSI as you draw.
 
-To check layout versus schematic navigate to work/ and do
+To check the full design rules, and layout versus schematic, navigate to work/ and do
 
 ``` tcl
-make cdl lvs
+make drc cdl lvs
 ```
 
 Remember to save the layout first.
 
-If you've routed correctly, then the LVS should be correct. 
-
-![](../media/layout.png)
-
-<!--pan_doc:
-<sub>Figure 6: The completed LELO_EX layout with labelled ports, ready for the LVS check against the schematic</sub>
--->
-
+If you've routed correctly, then both the DRC and the LVS should be OK.
 
 ---
+
 
 # Extract layout parasitics <a name="lpe"></a>
 
@@ -730,14 +814,14 @@ make lpe
 Check the generated netlist
 
 ``` bash
-cat lpe/LELO_EX_lpe.spi
+cat lpe/REY_EX_lpe.spi
 ```
 
 ---
 
 # Simulate with layout parasitics <a name="simlpe"></a>
 
-Navigate to sim/LELO_EX. We now want to simulate the layout.
+Navigate to sim/REY_EX. We now want to simulate the layout.
 
 The default `tran.spi` should already have support for that.
 
@@ -762,7 +846,7 @@ make typical
 ```
 
 ## Corners
-Navigate to sim/LELO_EX. Run all corners again
+Navigate to sim/REY_EX. Run all corners again
 
 ``` bash
 make all
@@ -788,7 +872,7 @@ Run summary again
 
 ```bash
 make summary
-pandoc -s  README.md -o README.html
+pandoc -s --metadata title="REY_EX" README.md -o README.html
 ```
 
 Open the README.html and have a look a the results. The layout should be close
@@ -796,14 +880,16 @@ to the schematic simulation.
 
 # Make documentation 
 
-Make a file (or it may exists) `design/LELO_EX_SKY130A/LELO_EX.md` and add some
+Make a file (or it may exists) `design/REY_EX_SKY130A/REY_EX.md` and add some
 documentation of what you've made. 
 
-Add the simulation results to your git repository to keep track
+Add the simulation results to your git repository to keep track. The README links
+to the results. The `.gitignore` ignores them, since most generated files don't
+belong in git, so these you must force.
 
 ```
-git add sim/LELO_EX/results/*.html
-git add sim/LELO_EX/README.md 
+git add -f sim/REY_EX/results/*.html
+git add sim/REY_EX/README.md 
 ```
 
 # Edit info.yaml 
@@ -818,20 +904,18 @@ to what is correct for you.
 
 I've added the doc section such that the workflows will generate the docs. 
 
-The sim is to run a typical simulation. 
-
 ```yaml
-library: LELO_EX_SKY130A
-cell: LELO_EX
+library: REY_EX_SKY130A
+cell: REY_EX
 author: Carsten Wulff
-github: wulffern
+github: analogicus
 tagline: The answer is 42
 email: carsten@wulff.no
-url: wulffern.github.io
+url: analogicus.github.io
 doc:
   libraries:
-    LELO_EX_SKY130A:
-      - LELO_EX
+    REY_EX_SKY130A:
+      - REY_EX
 ```
 
 # Setup github pages 
@@ -840,7 +924,7 @@ Go to your GitHub repository (repo). Press Settings. Press Pages. Choose source 
 GitHub Actions
 
 Wait for the workflows to build. And check your github pages. 
-Mine is [https://wulffern.github.io/lelo_ex0_sky130a/](https://wulffern.github.io/lelo_ex0_sky130a/).
+Mine is [https://analogicus.github.io/rey_ex_sky130a/](https://analogicus.github.io/rey_ex_sky130a/).
 
 # Frequently asked questions
 
@@ -850,10 +934,10 @@ Sometimes the reference to the transistors in the magic file might be wrong.
 Open the .mag file in a text editor and check. The correct way is 
 
 ```sh
-use JNWATR_NCH_4C5F0  JNWATR_NCH_4C5F0_0 ../LELO_ATR_SKY130A
+use REYATR_NCH_4C5F0  REYATR_NCH_4C5F0_0 ../REY_ATR_SKY130A
 ```
 
-It's the last `../LELO_ATR_SKY130A` that sometimes is missing.
+It's the last `../REY_ATR_SKY130A` that sometimes is missing.
 
 ---
 
@@ -864,6 +948,8 @@ The one-page version of this chapter:
 
 -->
 
-- One cell end to end: schematic in xschem, a symbol, a testbench, and a cicsim run with a results table
+- One cell end to end: schematic and symbol in xschem, a testbench, corners with cicsim, then layout, DRC, LVS and a simulation of the extracted netlist
 - The names are not cosmetic: instances, ports and directories follow the aicex conventions the tools expect
 - By the end you have run corners from one command - the pattern every later week repeats
+
+Pictures by Carsten, Written by model, Approved by Carsten
