@@ -10,7 +10,7 @@ date: 2025-10-26
 
 <!--pan_doc:
 
-**Keywords:** IP, xschem, Symbol, ngspice, Corners, Layout, DRC, LVS, LPE, Documentation
+**Keywords:** IP, xschem, Symbol, ngspice, cicwave, Corners, Layout, DRC, LVS, LPE, Documentation
 
 -->
 
@@ -443,17 +443,53 @@ Open `results/tran_Sch_typical.html`
 
 ## Check waveforms
 
-You can either use ngspice, or you can use cicsim, or you can use something I
-don't know about 
+I've made [cicwave](https://github.com/wulffern/cicwave) to look at waveforms. You
+can also use ngspice, or something I don't know about.
 
 Open the raw file with 
 
 ``` bash
-cicsim wave output_tran/tran_SchGtKttTtVt.raw 
+cicwave output_tran/tran_SchGtKttTtVt.raw 
 ```
 
-Load the results, and try to look at the plots. There might not be that much
-interesting happening 
+Double click `i(v0)` in the list of waves to plot it. Double click it again to remove it.
+
+There's not much happening, since all the sources are DC. The current is negative
+because ngspice counts current into the positive terminal of V0 as positive, and
+here it comes out, which is why `tran.meas` has the minus sign.
+
+### Save the view
+
+Press Ctrl+S (File -> Save Session), and save as `typical.cicwave.yaml`. A session
+is a text file that says which files and waves you looked at, so you don't have to
+click again. It looks like this
+
+```yaml
+files:
+- path: output_tran/tran_SchGtKttTtVt.raw
+plots:
+- name: REY_EX output current, typical corner
+  title: REY_EX output current, typical corner
+  ylabel: i(v0) [A]
+  waves:
+  - file: 0
+    name: i(v0)
+```
+
+Open it again with `cicwave --session typical.cicwave.yaml`, or skip the window and
+make a figure for your report. The file ending selects PNG, SVG or PDF.
+
+```bash
+cicwave --session typical.cicwave.yaml --export typical.png
+```
+
+![](../media/rey_ex_wave_typical.png)
+
+<!--pan_doc:
+<sub>Figure 2: The output current in the typical corner, exported from cicwave. The current is 20.6 uA. The ripple is about 50 nA, and nothing in the circuit drives it. It comes from the simulator, with reltol=1e-3 in tran.spi. With reltol=1e-6 it's gone</sub>
+-->
+
+Always ask where a wiggle comes from. This one is the simulator, not the circuit.
 
 ### Searching waveforms
 
@@ -511,14 +547,20 @@ The measured outputs from ngspice will be added to `tran_SchGtAmcttTtVt.yaml`
 
 Delete the "return" line.
 
-Add the following lines (they automatically plot the current and gate voltage)
+Add the following lines, before the "Save new yaml file" comment (they write a
+session for each corner, and use cicwave to plot the output current)
 
 ```python
-import cicsim as cs
-fname = name +".png"
+import os
+import subprocess
+session = {"files": [{"path": os.path.basename(name) + ".raw"}],
+           "plots": [{"waves": [{"file": 0, "name": "i(v0)"}]}]}
+fsession = name + ".cicwave.yaml"
+with open(fsession, "w") as fo:
+  yaml.dump(session, fo)
+fname = name + ".png"
 print(f"Saving {fname}")
-cs.rawplot(name + ".raw","time","v(ibps_5u),i(v0)" \
-  ,ptype="",fname=fname)
+subprocess.run(["cicwave", "--session", fsession, "--export", fname], check=True)
 ```
 
 Re-run measurements to check the python code
@@ -527,10 +569,71 @@ Re-run measurements to check the python code
 make typical etc mc OPT="--no-run"
 ```
 
-You'll see that cicsim writes all the png's. Check with `ls -l output_tran/*.png`.
+You'll see that cicwave writes all the png's. Check with `ls -l output_tran/*.png`.
 
 You'll also notice it will slow down the simulation, so maybe remove the lines
 from `tran.py` again ;-) 
+
+## Compare corners in cicwave
+
+A table gives you the numbers, while a plot shows you the pattern. Open all the
+extreme corners at the same time.
+
+```bash
+cicwave output_tran/tran_SchGtK[fs][fs]T*Vt.raw
+```
+
+Each file is listed at the top left. Select a file, and double click `v(ibps_5u)`. Repeat
+for all the files. Save the session as `etc.cicwave.yaml`, and make a figure.
+
+```bash
+cicwave --session etc.cicwave.yaml --export etc.png
+```
+
+![](../media/rey_ex_wave_etc.png)
+
+<!--pan_doc:
+<sub>Figure 3: The gate-source voltage in the 8 extreme corners, from 0.60 V to 0.76 V. The cold corners (Tl) are above the hot corners (Th) of the same process, since the threshold voltage increases when it gets cold</sub>
+-->
+
+For Monte Carlo we don't care about each run, we care about the distribution. Open
+the measurements instead of the waveforms. Cicsim wrote them to a CSV file, with one
+row for each run.
+
+```bash
+cicwave results/tran_Sch_mc.csv
+```
+
+Right click `ibns_20u` in the list of waves, and select Histogram.
+
+To make a figure, save a session as `mc.cicwave.yaml`. The measurements are already
+scaled to uA by the `scale` in `tran.yaml`, so tell cicwave the unit.
+
+```yaml
+files:
+- path: results/tran_Sch_mc.csv
+plots:
+- name: Monte Carlo
+  title: REY_EX output current, 30 Monte Carlo runs
+  analysis: histogram
+  unit: uA
+  waves:
+  - file: 0
+    name: ibns_20u
+```
+
+```bash
+cicwave --session mc.cicwave.yaml --export mc.png
+```
+
+![](../media/rey_ex_wave_mc_hist.png)
+
+<!--pan_doc:
+<sub>Figure 4: The distribution of the output current in the 30 Monte Carlo runs, exported from cicwave. The mean is 20.89 uA, and the standard deviation is 0.83 uA. The red line is a Gaussian with the same mean and standard deviation, scaled to the tallest bar. The specification is 19 uA to 21 uA, and 15 of the 30 runs are outside</sub>
+-->
+
+Thirty runs is a coarse histogram, so don't read too much into each bar. Try
+`--count 100` for the `mc` target in the Makefile, and see how the shape changes.
 
 ## Generate simulation summary
 
@@ -581,6 +684,9 @@ From the corner and mismatch simulation, we can observe a few things.
   as the VDS of M1. As such, the current will not be the same.
 - The statistics from 30 corners show that when we add or subtract 3 standard deviation from the mean,
   the resulting current is outside our specification of +- 5 %. 
+- The extreme corners move VGS by 150 mV, but the current only from 20.47 uA to
+  20.73 uA, because the input and the output transistors move together. Mismatch
+  is the opposite, it moves them apart, so that's what sets the accuracy of a current mirror.
 
 ---
 
@@ -651,7 +757,7 @@ Place all transistors on top of each other as shown below in the picture.
 ![](../media/rey_ex_place.png)
 
 <!--pan_doc:
-<sub>Figure 2: The transistor instances stacked on top of each other, before routing. The figures of the layout are drawn from the GDS with KLayout, so the colors differ from Magic</sub>
+<sub>Figure 5: The transistor instances stacked on top of each other, before routing. The figures of the layout are drawn from the GDS with KLayout, so the colors differ from Magic</sub>
 -->
 
 ## Place devices
@@ -713,7 +819,7 @@ paint locali
 ![](../media/rey_ex_ground.png)
 
 <!--pan_doc:
-<sub>Figure 3: The locali rail below the stack ties the guard rings and the sources of all five transistors to ground</sub>
+<sub>Figure 6: The locali rail below the stack ties the guard rings and the sources of all five transistors to ground</sub>
 -->
 
 ## Route Gates
@@ -735,7 +841,7 @@ The poly carries the connection across to the strip.
 ![](../media/rey_ex_gates.png)
 
 <!--pan_doc:
-<sub>Figure 4: The gates connected by a locali strip on the left side of the stack</sub>
+<sub>Figure 7: The gates connected by a locali strip on the left side of the stack</sub>
 -->
 
 ## Drain of the output transistors
@@ -771,7 +877,7 @@ etc. For locali it's usually all over the place.
 ![](../media/rey_ex_drains.png)
 
 <!--pan_doc:
-<sub>Figure 5: The completed REY_EX layout. The metal1 strip connects the drains of the four output transistors, and passes over the input transistor in the middle, without a via</sub>
+<sub>Figure 8: The completed REY_EX layout. The metal1 strip connects the drains of the four output transistors, and passes over the input transistor in the middle, without a via</sub>
 -->
 
 ## Check the labels

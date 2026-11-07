@@ -10,7 +10,7 @@ date: 2025-10-25
 
 <!--pan_doc:
 
-**Keywords:** WSL, Git, AICEX, ngspice, xschem, Magic, cicconf, cicsim, cicpy
+**Keywords:** WSL, Git, AICEX, ngspice, xschem, Magic, cicconf, cicsim, cicwave, cicpy
 
 -->
 
@@ -221,6 +221,18 @@ python3 -m pip install -e .
 cd ../..
 ```
 
+
+## Install cicwave
+
+cIcWave is the waveform viewer.
+
+``` bash
+cd aicex/ip/cicwave
+git checkout main
+git pull
+python3 -m pip install -e .
+cd ../..
+```
 
 ## Install cicpy
 
